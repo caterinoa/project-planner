@@ -236,12 +236,9 @@
 		</profile>
 	
 		<profile>
-			<id>pitest-mutation</id>
+			<id>pitest</id>
 			<activation>
-				<property>
-					<name>skipMutation</name>
-					<value>!true</value>
-				</property>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
@@ -259,7 +256,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			
 		</profile>
 	
 	</profiles>
