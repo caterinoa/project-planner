@@ -19,5 +19,5 @@ matrix:
     - jdk: openjdk8
       script: ./mvn
     - jdk: openjdk11
-      script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report sonar:sonar
-      #- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=caterinoa_project-planner
+      script:
+        - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=caterinoa_project-planner

@@ -17,21 +17,32 @@
 	<properties>
 		<java.version>1.8</java.version>
 		
+		<skip.unit-test>false</skip.unit-test>
+		
 		<jacoco.version>0.8.6</jacoco.version>
 		<pitest.version>1.6.3</pitest.version>
 		<coveralls.version>4.3.0</coveralls.version>
 		<sonar-cloud.version>3.7.0.1746</sonar-cloud.version>
 		
+		<sonar.projectKey>caterinoa_project-planner</sonar.projectKey>
+		<sonar.organization>caterinoa</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.reporting.outputDirectory}/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
-		<!-- Insert integration tests config here -->
-    	<!-- Also scans HTML files -->
+		<sonar.junit.reportPaths>
+			${project.build.directory}/surefire-reports
+		</sonar.junit.reportPaths>
     	<sonar.sources>
     		pom.xml,
     		${project.build.sourceDirectory},
     		${basedir}/src/main/resources
    		</sonar.sources>
+   		<sonar.test>
+   			${project.build.testSourceDirectory},
+   			${basedir}/src/it/java,
+   			${basedir}/src/e2e/java
+   		</sonar.test>
    		<sonar.coverage.exclusions>
    			**/*Application.*,
    			**/model/*
@@ -111,7 +122,16 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skip.unit-tests}</skipTests>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 		</plugins>	
 		
 		<pluginManagement>
@@ -176,6 +196,9 @@
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<executions>
 							<execution>
+								<configuration>								
+									<propertyName>surefireArgLine</propertyName>
+								</configuration>
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
