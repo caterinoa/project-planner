@@ -7,6 +7,7 @@ dist: xenial
 cache:
   directories:
     - $HOME/.m2
+    - $HOME/.sonar.cache
     
 addons:
   sonarcloud:
@@ -17,7 +18,8 @@ addons:
 matrix:
   include:
     - jdk: openjdk8
-      script: ./mvn
+      script: ./mvn clean verify -DskipCoverage=true -DskipMutation=true
     - jdk: openjdk11
-      script:
-        - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=caterinoa_project-planner
+      script: ./mvn clean verify -DskipCoverage=true -DskipMutation=true
+        # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+        #- ./mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=caterinoa_project-planner
