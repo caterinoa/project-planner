@@ -12,8 +12,8 @@ cache:
 addons:
   sonarcloud:
     organization: "caterinoa"
-    token:
-      secure: $SONAR_TOKEN
+    #token:
+    #  secure: $SONAR_TOKEN
 
 matrix:
   include:
