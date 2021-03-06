@@ -12,15 +12,17 @@ cache:
 addons:
   sonarcloud:
     organization: "caterinoa"
+    token:
+      secure: $SONARCLOUD_TOKEN
 
 matrix:
   include:
     - jdk: openjdk8
       if: type = push
-      script: ./mvnw clean verify && ./mvnw coveralls:report sonar:sonar
+      script: ./mvnw clean verify
     - jdk: openjdk8
       if: type IN (pull_request)
-      script: ./mvnw clean verify && ./mvnw coveralls:report sonar:sonar
+      script: ./mvnw clean verify
     - jdk: openjdk11
       if: type = push
       script: ./mvnw clean verify && ./mvnw coveralls:report sonar:sonar

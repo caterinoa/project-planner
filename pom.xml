@@ -22,7 +22,7 @@
 		<jacoco.version>0.8.6</jacoco.version>
 		<pitest.version>1.6.3</pitest.version>
 		<coveralls.version>4.3.0</coveralls.version>
-		<sonar-cloud.version>3.7.0.1746</sonar-cloud.version>
+		<sonar.version>3.7.0.1746</sonar.version>
 		
 		<sonar.projectKey>caterinoa_project-planner</sonar.projectKey>
 		<sonar.organization>caterinoa</sonar.organization>
@@ -147,7 +147,7 @@
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${sonar-cloud.version}</version>
+					<version>${sonar.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
