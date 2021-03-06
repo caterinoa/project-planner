@@ -11,13 +11,13 @@ public class Project {
 	private int completionPercentage;
 	
 	
-	public Project(Long id, String name, String description, Collection<Task> tasks, int completionPercentage) {
+	public Project(Long id, String name, String description, Collection<Task> tasks) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.tasks = tasks;
-		this.completionPercentage = completionPercentage;
+		this.completionPercentage = 0;
 	}
 
 
