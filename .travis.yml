@@ -7,13 +7,13 @@ dist: xenial
 cache:
   directories:
     - $HOME/.m2
-    - $HOME/.sonar.cache
+    - $HOME/.sonar/cache
     
 addons:
   sonarcloud:
     organization: "caterinoa"
-    token:
-      secure: $SONAR_TOKEN
+    #token:
+    #  secure: $SONAR_TOKEN
 
 matrix:
   include:

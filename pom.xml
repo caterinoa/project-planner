@@ -24,6 +24,10 @@
 		<coveralls.version>4.3.0</coveralls.version>
 		<sonar.version>3.7.0.1746</sonar.version>
 		
+		<coveralls.plugin.version>4.3.0</coveralls.plugin.version>
+		<jacoco.plugin.version>0.8.6</jacoco.plugin.version>
+		<sonar.plugin.version>3.7.0.1746</sonar.plugin.version>
+		
 		<sonar.projectKey>caterinoa_project-planner</sonar.projectKey>
 		<sonar.organization>caterinoa</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
