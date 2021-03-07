@@ -33,7 +33,7 @@
 		<sonar.junit.reportPaths>
 			${project.build.directory}/surefire-reports
 		</sonar.junit.reportPaths>
-    	<sonar.sources>
+		<sonar.sources>
     		pom.xml,
     		${project.build.sourceDirectory},
     		${basedir}/src/main/resources
@@ -42,10 +42,10 @@
    			${project.build.testSourceDirectory},
    			${basedir}/src/it/java,
    			${basedir}/src/e2e/java
-   		</sonar.test>
+ 		</sonar.test>
    		<sonar.coverage.exclusions>
    			**/*Application.*,
-   			**/model/*
+   			**/model/*,
    			**/repositories/* <!-- Only for service branch testing -->
  		</sonar.coverage.exclusions>
 	</properties>
