@@ -200,10 +200,7 @@
 		<profile>
 			<id>jacoco</id>
 			<activation>
-				<property>
-					<name>skipCoverage</name>
-					<value>!true</value>
-				</property>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
