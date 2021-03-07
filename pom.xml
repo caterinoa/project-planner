@@ -156,7 +156,6 @@
 						<excludes>
 							<exclude>**/*Application.*</exclude>
 							<exclude>**/model/*</exclude>
-							<exclude>**/repositories/*</exclude> <!-- Only for service branch testing -->
 						</excludes>	
 						<rules>
 							<rule>
