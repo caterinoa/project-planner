@@ -46,7 +46,6 @@
    		<sonar.coverage.exclusions>
    			**/*Application.*,
    			**/model/*
-   			**/repositories/* <!-- Only for service branch testing -->
  		</sonar.coverage.exclusions>
 	</properties>
 	
