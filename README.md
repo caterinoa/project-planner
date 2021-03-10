@@ -3,5 +3,6 @@
 
 # project-planner
 
-A web app for project planning.
+A web app for project planning, implemented for the course "Advanced techniques and tools for software development".
 
+*University of Florence*
