@@ -23,6 +23,7 @@
 		<pitest.version>1.6.3</pitest.version>
 		<coveralls.version>4.3.0</coveralls.version>
 		<sonar.version>3.7.0.1746</sonar.version>
+		<cucumber.version>6.10.0</cucumber.version>
 		
 		<sonar.projectKey>caterinoa_project-planner</sonar.projectKey>
 		<sonar.organization>caterinoa</sonar.organization>
@@ -75,6 +76,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -112,6 +123,7 @@
 							<resources>
 								<resource>
 									<directory>src/test/resources</directory>
+									<directory>src/bdd/resources</directory>
 								</resource>
 							</resources>
 						</configuration>
