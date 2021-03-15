@@ -43,7 +43,7 @@
    		<sonar.test>
    			${project.build.testSourceDirectory},
    			${basedir}/src/it/java,
-   			${basedir}/src/bdd/java
+   			${basedir}/src/e2e/java
  		</sonar.test>
    		<sonar.coverage.exclusions>
    			**/*Application.*,
@@ -115,7 +115,7 @@
 						<configuration>
 							<sources>
 								<source>src/it/java</source>
-								<source>src/bdd/java</source>
+								<source>src/e2e/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -129,7 +129,7 @@
 							<resources>
 								<resource>
 									<directory>src/test/resources</directory>
-									<directory>src/bdd/resources</directory>
+									<directory>src/e2e/resources</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -159,7 +159,7 @@
 								<include>**/*IT.java</include>
 							</includes>
 							<excludes>
-								<exclude>**/*BDD.java</exclude>
+								<exclude>**/*E2E.java</exclude>
 							</excludes>
 						</configuration>
 						<goals>
@@ -337,7 +337,7 @@
 								<id>e2e-tests</id>
 								<configuration>
 									<includes>
-										<include>**/*BDD.java</include>
+										<include>**/*E2E.java</include>
 									</includes>
 									<excludes>
 										<exclude>**/*ApplicationTests.java</exclude>
