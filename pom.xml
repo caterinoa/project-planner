@@ -218,6 +218,13 @@
 					<groupId>org.pitest</groupId>
 					<artifactId>pitest-maven</artifactId>
 					<version>${pitest.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.pitest</groupId>
+							<artifactId>pitest-junit5-plugin</artifactId>
+							<version>0.12</version>
+						</dependency>
+					</dependencies>
 					<configuration>
 						<targetClasses>
 							<param>it.unifi.projectplanner.*</param>
@@ -238,7 +245,6 @@
 				</plugin>				
 			</plugins>
 		</pluginManagement>
-			
 	</build>
 	
 	<profiles>
@@ -287,12 +293,14 @@
 				</plugins>
 			</build>
 		</profile>
-
 		<profile>
 			<id>pitest</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+				<skip.integration-tests>true</skip.integration-tests>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -306,13 +314,6 @@
 								<phase>verify</phase>
 							</execution>
 						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.pitest</groupId>
-								<artifactId>pitest-junit5-plugin</artifactId>
-								<version>0.12</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
