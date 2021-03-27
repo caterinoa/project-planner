@@ -1,7 +1,6 @@
 package it.unifi.projectplanner.bdd.steps;
 
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 
 public class EditTaskViewSteps {
 	
@@ -22,17 +21,4 @@ public class EditTaskViewSteps {
 		// Write code here that turns the phrase above into concrete actions
 		throw new io.cucumber.java.PendingException();
 	}
-
-	@Given("The provided due date is invalid")
-	public void the_provided_due_date_is_invalid() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
-	}
-
-	@Then("An error is shown containing the invalid date")
-	public void an_error_is_shown_containing_the_invalid_date() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
-	}
-
 }

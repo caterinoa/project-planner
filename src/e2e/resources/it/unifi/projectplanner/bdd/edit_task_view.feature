@@ -10,9 +10,3 @@ Feature: Edit Task View
 		Given The user provides task data in the fields
 		When The user clicks on the "Submit" button
 		Then The Task View is shown
-		
-	Scenario: Invalid data submission
-		Given The user provides task data in the fields
-		But The provided due date is invalid
-		When The user clicks on the "Submit" button
-		Then An error is shown containing the invalid date
