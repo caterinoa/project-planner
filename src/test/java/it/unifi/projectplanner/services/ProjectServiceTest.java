@@ -21,8 +21,6 @@ class ProjectServiceTest {
 	@Mock
 	private ProjectRepository projectRepository;
 	
-	private static final long PROJECT_FIXTURE_1_ID = 1L;
-	private static final long PROJECT_FIXTURE_2_ID = 2L;
 	private static final String PROJECT_FIXTURE_1_NAME = "first project";
 	private static final String PROJECT_FIXTURE_2_NAME = "second project";
 	
@@ -31,8 +29,8 @@ class ProjectServiceTest {
 
 	@Test
 	void test_getAllProjects() {
-		Project firstProject = new Project(PROJECT_FIXTURE_1_ID, PROJECT_FIXTURE_1_NAME, Collections.emptyList()); 
-		Project secondProject = new Project(PROJECT_FIXTURE_2_ID, PROJECT_FIXTURE_2_NAME, Collections.emptyList());
+		Project firstProject = new Project(PROJECT_FIXTURE_1_NAME, Collections.emptyList()); 
+		Project secondProject = new Project(PROJECT_FIXTURE_2_NAME, Collections.emptyList());
 		when(projectRepository.findAll()).
 			thenReturn(asList(firstProject, secondProject));
 		assertThat(projectService.getAllProjects()).containsExactly(firstProject, secondProject);	
