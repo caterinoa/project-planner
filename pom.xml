@@ -50,6 +50,12 @@
    			**/model/*,
    			**/repositories/* <!-- Only for testing service branch -->
  		</sonar.coverage.exclusions>
+ 		<sonar.issue.ignore.multicriteria.e1.ruleKey>
+ 			squid:S3776
+		</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>
+			**/model/*.java
+		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 	</properties>
 	
 	<dependencies>
