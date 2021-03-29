@@ -241,7 +241,7 @@
 							<param>it.unifi.projectplanner.*</param>
 						</targetTests>
 						<mutators>
-							<mutator>ALL</mutator>
+							<mutator>STRONGER</mutator>
 						</mutators>
 						<mutationThreshold>100</mutationThreshold>
 					</configuration>
