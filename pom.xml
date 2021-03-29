@@ -50,6 +50,12 @@
    			**/model/*,
    			**/services/* <!-- Only for testing persistence branch -->
  		</sonar.coverage.exclusions>
+ 		<sonar.issue.ignore.multicriteria.e1.ruleKey>
+ 			squid:S3776
+		</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>
+			**/model/*.java
+		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 	</properties>
 	
 	<dependencies>
@@ -242,7 +248,7 @@
 							<param>it.unifi.projectplanner.*</param>
 						</targetTests>
 						<mutators>
-							<mutator>DEFAULTS</mutator>
+							<mutator>STRONGER</mutator>
 						</mutators>
 						<mutationThreshold>100</mutationThreshold>
 					</configuration>
@@ -302,9 +308,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<skip.integration-tests>true</skip.integration-tests>
-			</properties>
 			<build>
 				<plugins>
 					<plugin>

@@ -10,7 +10,7 @@ import it.unifi.projectplanner.model.Project;
 public interface ProjectRepository extends JpaRepository<Project, Long>{
 	
 	public List<Project> findAll();
-	public Project findByName(String name);
+	public Optional<Project> findByName(String name);
 	public Optional<Project> findById(Long id);
 
 }
