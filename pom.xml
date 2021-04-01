@@ -36,9 +36,9 @@
 			${project.build.directory}/surefire-reports
 		</sonar.junit.reportPaths>
 		<sonar.sources>
-    		pom.xml,
-    		${project.build.sourceDirectory},
-    		${basedir}/src/main/resources
+			pom.xml,
+			${project.build.sourceDirectory},
+			${basedir}/src/main/resources
    		</sonar.sources>
    		<sonar.test>
    			${project.build.testSourceDirectory},
