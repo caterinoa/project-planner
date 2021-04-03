@@ -35,6 +35,14 @@ public class Project {
 		this.completionPercentage = 0;
 	}
 
+	public Project(Long id, String name, Collection<Task> tasks) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.tasks = tasks;
+		this.completionPercentage = 0;
+	}
+
 	public Long getId() {
 		return id;
 	}
