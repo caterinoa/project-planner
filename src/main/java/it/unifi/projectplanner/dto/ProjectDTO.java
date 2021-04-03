@@ -14,7 +14,7 @@ public class ProjectDTO {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 }
