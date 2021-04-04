@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <title>Projects</title>
 
-<body
+<body>
 
 	<h1>Project planner</h1>
 	
@@ -21,7 +21,6 @@
 		<span th:text="${message}"></span>
 	</div>
 	
-	<h3>My projects</h3>
 	<!-- IF NO PROJECT -->
 	<div th:if="${projects.empty}">
 		<div>No projects</div>
@@ -29,11 +28,12 @@
 	<!-- ELSE -->
 	<div th:unless="${projects.empty}">
 		<table id="projects_table">
+			<caption><h3>My projects</h3></caption>
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Completion percentage</th>
+					<th scope="col">ID</th>
+					<th scope="col">Name</th>
+					<th scope="col">Completion percentage</th>
 				</tr>
 			</thead>
 			<tbody>
