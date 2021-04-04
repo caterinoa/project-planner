@@ -48,7 +48,7 @@
    		<sonar.coverage.exclusions>
    			**/*Application.*,
    			**/model/*,
-   			**/repositories/* <!-- Only for testing service branch -->
+   			**/exceptions/*,
  		</sonar.coverage.exclusions>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
  			squid:S3776
@@ -208,7 +208,7 @@
 						<excludes>
 							<exclude>**/*Application.*</exclude>
 							<exclude>**/model/*</exclude>
-							<exclude>**/repositories/*</exclude><!-- Only for testing service branch -->
+							<exclude>**/exceptions/*</exclude>
 						</excludes>	
 						<rules>
 							<rule>
@@ -235,7 +235,7 @@
 						<excludedClasses>
 							<param>it.unifi.projectplanner.ProjectPlannerApplication</param>
 							<param>it.unifi.projectplanner.model.*</param>
-							<param>it.unifi.projectplanner.repositories.*</param> <!-- Only for testing service branch -->
+							<param>it.unifi.projectplanner.exceptions.*</param>
 						</excludedClasses>
 						<targetTests>
 							<param>it.unifi.projectplanner.*</param>
