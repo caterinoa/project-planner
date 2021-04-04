@@ -20,28 +20,33 @@ public class ProjectWebController {
 
 	private static final String INDEX = "index";
 	private static final String REDIRECT = "redirect:/";
+	private static final String PROJECTS = "projects";
 	private static final String ERROR = "error";
 	private static final String MESSAGE = "message";
+
 	@Autowired
 	private ProjectService projectService;
 
 	@GetMapping("/")
 	public String index(Model model) {
 		List<Project> allProjects = projectService.getAllProjects();
-		model.addAttribute("projects", allProjects);
+		model.addAttribute(PROJECTS, allProjects);
 		model.addAttribute(MESSAGE, allProjects.isEmpty() ? "No projects" : "");
 		return INDEX;
 	}
 
 	@PostMapping("/save")
 	public String saveProject(@ModelAttribute("name") ProjectDTO projectDTO, Model model) {
+		String name = projectDTO.getName();
+		String page = REDIRECT;
 		try {
-			projectService.insertNewProject(new Project(projectDTO.getName(), new ArrayList<>()));
+			projectService.insertNewProject(new Project(name, new ArrayList<>()));
 		} catch (ConflictingProjectNameException e) {
 			model.addAttribute(ERROR, e.getMessage());
-			return INDEX;
+			model.addAttribute(PROJECTS, projectService.getAllProjects());
+			page = INDEX;
 		}
-		return REDIRECT;
+		return page;
 	}
 
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Projects</title>
+
+<body
+
+	<h1>Project planner</h1>
+	
+	<div>
+		<form name="new_project_form" th:action="@{/save}" method="POST">
+			<p>
+				New project name: <input type="text" name="name" />
+				<button type="submit" name="new_project_submit">New project</button>
+			</p>
+		</form>
+	</div>
+	
+	<div th:unless="${message == null || message.empty}">
+		<span th:text="${message}"></span>
+	</div>
+	
+	<h3>My projects</h3>
+	<!-- IF NO PROJECT -->
+	<div th:if="${projects.empty}">
+		<div>No projects</div>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${projects.empty}">
+		<table id="projects_table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Completion percentage</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="project : ${projects}">
+					<td th:text="${project.id}"></td>
+					<td th:text="${project.name}"></td>
+					<td th:text="${project.completionPercentage} + '%'"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+</head>

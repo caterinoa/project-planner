@@ -1,6 +1,7 @@
 package it.unifi.projectplanner.controllers;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,19 +41,19 @@ class ProjectWebControllerTest {
 	private ProjectService projectService;
 
 	@Test
-	void testStatus200() throws Exception {
+	void test_Status200() throws Exception {
 		this.mvc.perform(get("/")).andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
-	void testReturnHomeView() throws Exception {
+	void test_ReturnHomeView() throws Exception {
 		ModelAndViewAssert.assertViewName(this.mvc.perform(get("/")).andReturn().getModelAndView(), INDEX);
 	}
 
 	@Test
-	void test_HomeView_showsProjects() throws Exception {
-		List<Project> projects = asList(new Project("first", Collections.emptyList()),
-				new Project("second", Collections.emptyList()));
+	void test_HomeView_ShowsProjects() throws Exception {
+		List<Project> projects = asList(new Project(1L, "first", emptyList()),
+				new Project(2L, "second", emptyList()));
 
 		when(projectService.getAllProjects()).thenReturn(projects);
 
@@ -62,17 +62,17 @@ class ProjectWebControllerTest {
 	}
 
 	@Test
-	void test_HomeView_showsMessageWhenThereAreNoProjects() throws Exception {
-		when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
+	void test_HomeView_ShowsMessageWhenThereAreNoProjects() throws Exception {
+		when(projectService.getAllProjects()).thenReturn(emptyList());
 
 		this.mvc.perform(get("/")).andExpect(view().name(INDEX))
-				.andExpect(model().attribute("projects", Collections.emptyList()))
+				.andExpect(model().attribute("projects", emptyList()))
 				.andExpect(model().attribute(MESSAGE, "No projects"));
 	}
 
 	@Test
-	void test_newProject_withNameShouldSave() throws Exception {
-		Project project = new Project("new", Collections.emptyList());
+	void test_NewProject_WithNameShouldSave() throws Exception {
+		Project project = new Project("new", emptyList());
 
 		this.mvc.perform(post("/save").param("name", "new")).andExpect(view().name(REDIRECT));
 
@@ -81,7 +81,7 @@ class ProjectWebControllerTest {
 	
     @Test
     void test_newProject_withExistingNameShouldNotSave() throws Exception {
-        Project project = new Project("new", Collections.emptyList());
+        Project project = new Project("new", emptyList());
 
         when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException());
 
