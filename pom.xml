@@ -49,6 +49,7 @@
    			**/*Application.*,
    			**/model/*,
    			**/exceptions/*,
+   			**/dto/*
  		</sonar.coverage.exclusions>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
  			squid:S3776
@@ -209,6 +210,7 @@
 							<exclude>**/*Application.*</exclude>
 							<exclude>**/model/*</exclude>
 							<exclude>**/exceptions/*</exclude>
+							<exclude>**/dto/*</exclude>
 						</excludes>	
 						<rules>
 							<rule>
@@ -236,6 +238,7 @@
 							<param>it.unifi.projectplanner.ProjectPlannerApplication</param>
 							<param>it.unifi.projectplanner.model.*</param>
 							<param>it.unifi.projectplanner.exceptions.*</param>
+							<param>it.unifi.projectplanner.dto.*</param>
 						</excludedClasses>
 						<targetTests>
 							<param>it.unifi.projectplanner.*</param>
