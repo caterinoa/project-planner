@@ -9,6 +9,10 @@ cache:
     - $HOME/.m2
     - $HOME/.sonar/cache
     
+services:
+  - xvfb
+  - docker
+    
 addons:
   sonarcloud:
     organization: "caterinoa"
