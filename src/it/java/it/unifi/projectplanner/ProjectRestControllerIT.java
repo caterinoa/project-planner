@@ -43,7 +43,7 @@ class ProjectRestControllerIT {
 
 	@DynamicPropertySource
 	static void databaseProperties(DynamicPropertyRegistry registry) {
-		registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
+		registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
 		registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.MySQL8Dialect");
 		registry.add("spring.datasource.url", MY_SQL_CONTAINER::getJdbcUrl);
 		registry.add("spring.datasource.username", MY_SQL_CONTAINER::getUsername);
