@@ -9,6 +9,10 @@ cache:
     - $HOME/.m2
     - $HOME/.sonar/cache
     
+services:
+  - xvfb
+  - docker
+    
 addons:
   sonarcloud:
     organization: "caterinoa"
@@ -16,15 +20,21 @@ addons:
 matrix:
   include:
     - jdk: openjdk8
-      if: type IN (push)
-      script: ./mvnw clean verify
+      if: type IN (push) AND branch NOT IN (integration)
+      script: ./mvnw clean verify -Pjacoco -Ppitest && ./mvnw coveralls:report
     - jdk: openjdk8
-      if: type IN (pull_request) AND branch = master
-      script: ./mvnw clean verify && ./mvnw verify -Pe2e-tests
+      if: type IN (push) AND branch = integration
+      script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report
+    - jdk: openjdk8
+      if: type IN (pull_request)
+      script: ./mvnw clean verify -Pjacoco && ./mvnw verify -Pe2e-tests && ./mvnw coveralls:report
     - jdk: openjdk11
-      if: type IN (push)
-      script: ./mvnw clean verify && ./mvnw sonar:sonar
+      if: type IN (push) AND branch NOT IN (integration)
+      script: ./mvnw clean verify -Pjacoco -Ppitest && ./mvnw coveralls:report sonar:sonar      
     - jdk: openjdk11
-      if: type IN (pull_request) AND branch = master
-      script: ./mvnw clean verify && ./mvnw verify -Pe2e-tests && ./mvnw sonar:sonar
+      if: type IN (push) AND branch = integration
+      script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report sonar:sonar
+    - jdk: openjdk11
+      if: type IN (pull_request)
+      script: ./mvnw clean verify -Pjacoco && ./mvnw verify -Pe2e-tests && ./mvnw coveralls:report sonar:sonar
       

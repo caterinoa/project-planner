@@ -161,7 +161,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>integration-tests</id>
 						<configuration>
 							<skipTests>${skip.integration-tests}</skipTests>
 							<includes>
@@ -308,6 +307,9 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+				<skip.integration-tests>true</skip.integration-tests>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -342,7 +344,6 @@
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>e2e-tests</id>
 								<configuration>
 									<includes>
 										<include>**/*E2E.java</include>
