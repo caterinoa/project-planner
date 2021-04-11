@@ -3,8 +3,6 @@ package it.unifi.projectplanner.dto;
 public class ProjectDTO {
 	
 	private String name;
-	
-	
 
 	public ProjectDTO() {
 		super();
