@@ -54,7 +54,7 @@
  		</sonar.coverage.exclusions>
  		<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
- 			squid:S3776
+ 			java:S3776
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
 			**/model/*.java
