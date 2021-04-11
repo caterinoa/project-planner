@@ -52,6 +52,7 @@
    			**/dto/*,
    			**/services/* <!-- Only for testing controllers -->
  		</sonar.coverage.exclusions>
+ 		<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
  			squid:S3776
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -250,6 +251,11 @@
 						<targetTests>
 							<param>it.unifi.projectplanner.*</param>
 						</targetTests>
+						<excludedTestClasses>
+							<param>**/*ApplicationTests.java</param>
+							<param>**/*IT.java</param>
+							<param>**/*E2E.java</param>
+						</excludedTestClasses>
 						<mutators>
 							<mutator>STRONGER</mutator>
 						</mutators>
