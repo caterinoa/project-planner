@@ -25,6 +25,7 @@
 		<coveralls.version>4.3.0</coveralls.version>
 		<sonar.version>3.7.0.1746</sonar.version>
 		<cucumber.version>6.10.1</cucumber.version>
+		<testcontainers.version>1.15.1</testcontainers.version>
 		
 		<sonar.projectKey>caterinoa_project-planner</sonar.projectKey>
 		<sonar.organization>caterinoa</sonar.organization>
@@ -49,6 +50,7 @@
    			**/*Application.*,
    			**/model/*,
    			**/exceptions/*,
+   			**/dto/*
  		</sonar.coverage.exclusions>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
  			squid:S3776
@@ -92,6 +94,27 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<version>${cucumber.version}</version>
@@ -106,6 +129,14 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>                      
+					<include>application.properties</include>                  
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -161,7 +192,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>integration-tests</id>
 						<configuration>
 							<skipTests>${skip.integration-tests}</skipTests>
 							<includes>
@@ -209,6 +239,7 @@
 							<exclude>**/*Application.*</exclude>
 							<exclude>**/model/*</exclude>
 							<exclude>**/exceptions/*</exclude>
+							<exclude>**/dto/*</exclude>
 						</excludes>	
 						<rules>
 							<rule>
@@ -236,6 +267,7 @@
 							<param>it.unifi.projectplanner.ProjectPlannerApplication</param>
 							<param>it.unifi.projectplanner.model.*</param>
 							<param>it.unifi.projectplanner.exceptions.*</param>
+							<param>it.unifi.projectplanner.dto.*</param>
 						</excludedClasses>
 						<targetTests>
 							<param>it.unifi.projectplanner.*</param>
@@ -303,6 +335,9 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+				<skip.integration-tests>true</skip.integration-tests>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -344,7 +379,6 @@
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>e2e-tests</id>
 								<configuration>
 									<includes>
 										<include>**/*E2E.java</include>

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.model.Project;
@@ -21,21 +22,25 @@ public class ProjectService {
 		this.projectRepository = projectRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public List<Project> getAllProjects() {
 		return this.projectRepository.findAll();
 	}
 
+	@Transactional(readOnly = true)
 	public Project getProjectById(Long id) {
 		return this.projectRepository.findById(id).orElse(null);
 	}
 
+	@Transactional(readOnly = true)
 	public Project getProjectByName(String name) {
 		return this.projectRepository.findByName(name).orElse(null);
 	}
 
+	@Transactional
 	public Project insertNewProject(Project project) throws ConflictingProjectNameException {
 		Optional<Project> foundByName = this.projectRepository.findByName(project.getName());
-		if(foundByName.isPresent()) {
+		if (foundByName.isPresent()) {
 			throw new ConflictingProjectNameException();
 		}
 		return this.projectRepository.save(project);
