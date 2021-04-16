@@ -58,7 +58,6 @@ class ProjectWebControllerHtmlTest {
 
 		HtmlTable table = page.getHtmlElementById("projects_table");
 		assertThat(table.asText()).isEqualTo(
-				"My projects\n" +
 				"ID	Name	Completion percentage\n" + 
 				"1	first	0%\n" + 
 				"2	second	0%"
