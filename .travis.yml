@@ -16,6 +16,7 @@ services:
 addons:
   sonarcloud:
     organization: "caterinoa"
+  chrome: stable
 
 matrix:
   include:
