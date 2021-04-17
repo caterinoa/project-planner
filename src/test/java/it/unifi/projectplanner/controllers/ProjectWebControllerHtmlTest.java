@@ -1,7 +1,7 @@
 package it.unifi.projectplanner.controllers;
 
-import static java.util.Collections.emptyList;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,12 +31,11 @@ class ProjectWebControllerHtmlTest {
 
 	@MockBean
 	private ProjectService projectService;
-
+	
 	@Test
 	void test_HomePage_Title() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		assertThat(page.getTitleText()).isEqualTo("Projects");
-
 	}
 
 	@Test
@@ -49,7 +48,7 @@ class ProjectWebControllerHtmlTest {
 	}
 
 	@Test
-	void test_HomePage_WithProjects_ShouldShowThemInATable() throws Exception {
+	void test_HomePage_WithProjectsShouldShowThemInATable() throws Exception {
 		when((projectService.getAllProjects()))
 				.thenReturn(asList(new Project(1L, "first", emptyList()), new Project(2L, "second", emptyList())));
 
@@ -66,7 +65,7 @@ class ProjectWebControllerHtmlTest {
 	}
 	
 	@Test
-	void test_NewProject() throws Exception {
+	void test_HomePage_NewProject_WithNameShouldInsert() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		
 		final HtmlForm form = page.getFormByName("new_project_form");
@@ -75,5 +74,17 @@ class ProjectWebControllerHtmlTest {
 		
 		verify(projectService, times(1)).insertNewProject(new Project("new", emptyList()));
 	}
+	
+	@Test
+	void test_HomePage_NewProject_WithNoNameShouldNotInsert() throws Exception {
+		HtmlPage page = this.webClient.getPage("/");
+		
+		final HtmlForm form = page.getFormByName("new_project_form");
+		form.getInputByName("name").setValueAttribute("");
+		form.getButtonByName("new_project_submit").click();
+		
+		verify(projectService, times(0)).insertNewProject(new Project("", emptyList()));
+	}
+
 
 }

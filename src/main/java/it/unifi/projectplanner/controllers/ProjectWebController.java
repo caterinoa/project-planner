@@ -38,15 +38,19 @@ public class ProjectWebController {
 	@PostMapping("/save")
 	public String saveProject(@ModelAttribute("name") ProjectDTO projectDTO, Model model) {
 		String name = projectDTO.getName();
-		String page = REDIRECT;
-		try {
-			projectService.insertNewProject(new Project(name, new ArrayList<>()));
-		} catch (ConflictingProjectNameException e) {
-			model.addAttribute(ERROR, e.getMessage());
+		String page = INDEX;
+		if (name == null) {
+			model.addAttribute(ERROR, "The project name should not be empty");
 			model.addAttribute(PROJECTS, projectService.getAllProjects());
-			page = INDEX;
+		} else {
+			try {
+				projectService.insertNewProject(new Project(name, new ArrayList<>()));
+				page = REDIRECT;
+			} catch (ConflictingProjectNameException e) {
+				model.addAttribute(ERROR, e.getMessage());
+				model.addAttribute(PROJECTS, projectService.getAllProjects());
+			}
 		}
 		return page;
 	}
-
 }

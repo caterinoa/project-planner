@@ -2,6 +2,7 @@ package it.unifi.projectplanner.controllers;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,7 +72,7 @@ class ProjectWebControllerTest {
 	}
 
 	@Test
-	void test_NewProject_WithNameShouldSave() throws Exception {
+	void test_NewProject_WithNameShouldInsert() throws Exception {
 		Project project = new Project("new", emptyList());
 
 		this.mvc.perform(post("/save").param("name", "new")).andExpect(view().name(REDIRECT));
@@ -80,7 +81,7 @@ class ProjectWebControllerTest {
 	}
 	
     @Test
-    void test_newProject_withExistingNameShouldNotSave() throws Exception {
+    void test_NewProject_WithExistingNameShouldNotInsert() throws Exception {
         Project project = new Project("new", emptyList());
 
         when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException());
@@ -90,5 +91,16 @@ class ProjectWebControllerTest {
                 .andExpect(model().attribute(ERROR, "The specified name is already used for another project"));
 
         verify(projectService).insertNewProject(project);
+    }
+    
+    @Test
+    void test_NewProject_WithNoNameShouldNotInsert() throws Exception {  
+    	Project project = new Project("", emptyList());
+    	
+        mvc.perform(post("/save").param("name", ""))
+                .andExpect(view().name(INDEX))
+                .andExpect(model().attribute(ERROR, "The project name should not be empty"));
+
+        verify(projectService, times(0)).insertNewProject(project);
     }
 }
