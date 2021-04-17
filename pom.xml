@@ -423,8 +423,6 @@
 						<artifactId>docker-maven-plugin</artifactId>
 						<version>${docker.version}</version>
 						<configuration>
-							<verbose>true</verbose>
-							<showLogs>true</showLogs>
 							<images>
 								<image>
 									<alias>projectplanner-database</alias>
