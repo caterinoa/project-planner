@@ -4,7 +4,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
 public class TaskViewSteps {
-	
 
 	@Given("The Task View is shown")
 	public void the_task_view_is_shown() {

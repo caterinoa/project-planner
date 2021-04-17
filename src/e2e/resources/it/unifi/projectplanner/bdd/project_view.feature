@@ -7,6 +7,7 @@ Feature: Project View
 		And The Project View is shown
 		And A list is shown containing the projects that are stored in the database
 
+	@under_test
 	Scenario: Add a new project
 		Given The user provides project name in the text field
 		When The user clicks on the "New Project" button

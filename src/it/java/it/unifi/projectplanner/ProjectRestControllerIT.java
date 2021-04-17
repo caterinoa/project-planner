@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
