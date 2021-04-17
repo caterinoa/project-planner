@@ -218,6 +218,7 @@
 							<exclude>**/exceptions/*</exclude>
 							<exclude>**/dto/*</exclude>
 							<exclude>**/services/*</exclude> <!-- Only for testing controllers -->
+							<exclude>**/*htmlunit*</exclude>
 						</excludes>	
 						<rules>
 							<rule>
