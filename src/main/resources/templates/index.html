@@ -22,9 +22,9 @@
 		<p th:text="${error}"></p>
 	</div>
 	
-	<!-- IF NO PROJECT -->
-	<div th:if="${projects.empty}">
-		<p>No projects</p>
+	<!-- IF NO PROJECT SHOWS MESSAGE-->
+	<div th:unless="${message == null || message.empty}">
+		<p th:text="${message}"></p>
 	</div>
 	<!-- ELSE -->
 	<div th:unless="${projects.empty}">
