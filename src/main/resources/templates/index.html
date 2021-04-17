@@ -18,18 +18,18 @@
 		</form>
 	</div>
 	
-	<div th:unless="${message == null || message.empty}">
-		<span th:text="${message}"></span>
+	<div th:unless="${error == null || error.empty}">
+		<p th:text="${error}"></p>
 	</div>
 	
 	<!-- IF NO PROJECT -->
 	<div th:if="${projects.empty}">
-		<div>No projects</div>
+		<p>No projects</p>
 	</div>
 	<!-- ELSE -->
 	<div th:unless="${projects.empty}">
 		<table id="projects_table">
-			<caption><h3>My projects</h3></caption>
+			<caption>My projects</caption>
 			<thead>
 				<tr>
 					<th scope="col">ID</th>
