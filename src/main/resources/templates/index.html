@@ -18,13 +18,13 @@
 		</form>
 	</div>
 	
-	<div th:unless="${message == null || message.empty}">
-		<span th:text="${message}"></span>
+	<div id="error" th:unless="${error == null || error.empty}">
+		<p th:text="${error}"></p>
 	</div>
 	
-	<!-- IF NO PROJECT -->
-	<div th:if="${projects.empty}">
-		<div>No projects</div>
+	<!-- IF NO PROJECT SHOWS MESSAGE-->
+	<div th:unless="${message == null || message.empty}">
+		<p th:text="${message}"></p>
 	</div>
 	<!-- ELSE -->
 	<div th:unless="${projects.empty}">
@@ -42,6 +42,7 @@
 					<td th:text="${project.id}"></td>
 					<td th:text="${project.name}"></td>
 					<td th:text="${project.completionPercentage} + '%'"></td>
+					<td><a th:href="@{'/delete/' + ${project.id}}">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>
