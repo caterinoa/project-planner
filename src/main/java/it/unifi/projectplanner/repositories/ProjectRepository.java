@@ -27,5 +27,9 @@ public class ProjectRepository {
 	public Project save(Project project) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
+	
+	public void deleteById(Long id) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
 
 }
