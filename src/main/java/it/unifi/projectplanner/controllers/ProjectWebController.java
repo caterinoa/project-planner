@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import it.unifi.projectplanner.dto.ProjectDTO;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
 
@@ -38,15 +40,32 @@ public class ProjectWebController {
 	@PostMapping("/save")
 	public String saveProject(@ModelAttribute("name") ProjectDTO projectDTO, Model model) {
 		String name = projectDTO.getName();
-		String page = REDIRECT;
-		try {
-			projectService.insertNewProject(new Project(name, new ArrayList<>()));
-		} catch (ConflictingProjectNameException e) {
-			model.addAttribute(ERROR, e.getMessage());
+		String page = INDEX;
+		if (name == null) {
+			model.addAttribute(ERROR, "The project name should not be empty");
 			model.addAttribute(PROJECTS, projectService.getAllProjects());
-			page = INDEX;
+		} else {
+			try {
+				projectService.insertNewProject(new Project(name, new ArrayList<>()));
+				page = REDIRECT;
+			} catch (ConflictingProjectNameException e) {
+				model.addAttribute(ERROR, e.getMessage());
+				model.addAttribute(PROJECTS, projectService.getAllProjects());
+			}
 		}
 		return page;
 	}
 
+	@GetMapping("/delete/{id}")
+	public String deleteProject(@PathVariable long id, Model model) {
+		String page = INDEX;
+		try {
+			projectService.deleteProjectById(id);
+			page = REDIRECT;
+		} catch (NonExistingProjectException e) {
+			model.addAttribute(ERROR, e.getMessage());
+			model.addAttribute(PROJECTS, projectService.getAllProjects());
+		}
+		return page;
+	}
 }

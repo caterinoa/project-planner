@@ -1,8 +1,9 @@
 package it.unifi.projectplanner.controllers;
 
-import static java.util.Collections.emptyList;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
+import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
 
@@ -31,17 +34,16 @@ class ProjectWebControllerHtmlTest {
 
 	@MockBean
 	private ProjectService projectService;
-
+	
 	@Test
 	void test_HomePage_Title() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		assertThat(page.getTitleText()).isEqualTo("Projects");
-
 	}
 	
 	@Test
 	void test_HomePage_WithNoProjects() throws Exception {
-		when((projectService.getAllProjects())).thenReturn(emptyList());
+		when(projectService.getAllProjects()).thenReturn(emptyList());
 
 		HtmlPage page = this.webClient.getPage("/");
 
@@ -49,8 +51,8 @@ class ProjectWebControllerHtmlTest {
 	}
 
 	@Test
-	void test_HomePage_WithProjects_ShouldShowThemInATable() throws Exception {
-		when((projectService.getAllProjects()))
+	void test_HomePage_WithProjectsShouldShowThemInATable() throws Exception {
+		when(projectService.getAllProjects())
 				.thenReturn(asList(new Project(1L, "first", emptyList()), new Project(2L, "second", emptyList())));
 
 		HtmlPage page = this.webClient.getPage("/");
@@ -60,13 +62,13 @@ class ProjectWebControllerHtmlTest {
 		assertThat(table.asText()).isEqualTo(
 				"My projects\n" +
 				"ID	Name	Completion percentage\n" + 
-				"1	first	0%\n" + 
-				"2	second	0%"
+				"1	first	0%	Delete\n" + 
+				"2	second	0%	Delete"
 		);
 	}
 	
 	@Test
-	void test_NewProject() throws Exception {
+	void test_HomePage_NewProject_WithNameShouldInsert() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		
 		final HtmlForm form = page.getFormByName("new_project_form");
@@ -75,5 +77,41 @@ class ProjectWebControllerHtmlTest {
 		
 		verify(projectService, times(1)).insertNewProject(new Project("new", emptyList()));
 	}
+	
+	@Test
+	void test_HomePage_NewProject_WithExistingNameShouldNotInsert() throws Exception {
+		Project project = new Project("existing project", emptyList());
+		when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException());
+				
+		HtmlPage page = this.webClient.getPage("/");
+		final HtmlForm form = page.getFormByName("new_project_form");
+		form.getInputByName("name").setValueAttribute("existing project");
+		form.getButtonByName("new_project_submit").click();
+		
+		verify(projectService, times(1)).insertNewProject(project);
+	}
+	
+	@Test
+	void test_HomePage_NewProject_WithNoNameShouldNotInsert() throws Exception {
+		HtmlPage page = this.webClient.getPage("/");
+		
+		final HtmlForm form = page.getFormByName("new_project_form");
+		form.getInputByName("name").setValueAttribute("");
+		form.getButtonByName("new_project_submit").click();
+		
+		verify(projectService, times(0)).insertNewProject(new Project("", emptyList()));
+	}
 
+	@Test
+	void test_HomePage_DeleteProject_ByExistingIdShouldDelete() throws Exception {
+		this.webClient.getPage("/delete/1");
+		verify(projectService, times(1)).deleteProjectById(1L);
+	}
+
+	@Test
+	void test_HomePage_DeleteProject_ByNonExistingIdShouldNotDelete() throws Exception {
+		doThrow(new NonExistingProjectException()).when(projectService).deleteProjectById(1L);
+		this.webClient.getPage("/delete/1");
+		verify(projectService, times(1)).deleteProjectById(1L);
+	}
 }
