@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 
 @Service
@@ -17,6 +18,10 @@ public class ProjectService {
 	}
 
 	public Project insertNewProject(Project project) throws ConflictingProjectNameException {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public Project deleteProjectById(long id) throws NonExistingProjectException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 	
