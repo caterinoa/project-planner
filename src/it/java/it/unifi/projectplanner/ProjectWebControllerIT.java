@@ -62,7 +62,7 @@ class ProjectWebControllerIT {
 	}
 
 	@Test
-	void test_newProject() {
+	void test_HomePage_NewProject() {
 		webDriver.get(baseURL);
 		
 		webDriver.findElement(By.name("name")).sendKeys(NEW_PROJECT);
@@ -74,7 +74,7 @@ class ProjectWebControllerIT {
 	}
 	
 	@Test
-	void test_newProjectWithExistingName_ShouldShowErrorMessage() {
+	void test_HomePage_NewProjectWithExistingName_ShouldShowErrorMessage() {
 		projectRepository.save(new Project(SAVED_PROJECT, emptyList()));
 		
 		webDriver.get(baseURL);
@@ -85,7 +85,7 @@ class ProjectWebControllerIT {
 	}
 	
 	@Test
-	void test_DeleteProject() {
+	void test_HomePage_DeleteProject() {
 		Project saved = projectRepository.save(new Project(SAVED_PROJECT, emptyList()));
 		projectRepository.save(new Project("second project", emptyList()));
 		String id = saved.getId().toString();
@@ -97,7 +97,7 @@ class ProjectWebControllerIT {
 	}
 	
 	@Test
-	void test_DeleteNonExistingProject_ShouldShowErrorMessage() {
+	void test_HomePage_DeleteNonExistingProject_ShouldShowErrorMessage() {
 		webDriver.get(baseURL + "/delete/1");
 		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The specified project does not exist");
 	}
