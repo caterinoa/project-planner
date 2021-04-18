@@ -23,6 +23,7 @@ import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
 
@@ -77,7 +78,7 @@ class ProjectWebControllerTest {
 
 		this.mvc.perform(post("/save").param("name", "new")).andExpect(view().name(REDIRECT));
 
-		verify(projectService).insertNewProject(project);
+		verify(projectService, times(1)).insertNewProject(project);
 	}
 	
     @Test
@@ -90,7 +91,7 @@ class ProjectWebControllerTest {
                 .andExpect(view().name(INDEX))
                 .andExpect(model().attribute(ERROR, "The specified name is already used for another project"));
 
-        verify(projectService).insertNewProject(project);
+        verify(projectService, times(1)).insertNewProject(project);
     }
     
     @Test
@@ -103,4 +104,23 @@ class ProjectWebControllerTest {
 
         verify(projectService, times(0)).insertNewProject(project);
     }
+    
+    @Test
+    void test_DeleteProject_ByExistingIdShouldDelete() throws Exception {
+		mvc.perform(get("/delete/1")).andExpect(view().name(REDIRECT));
+		verify(projectService, times(1)).deleteProjectById(1L);
+    }
+    
+	@Test
+	void test_DeleteProject_ByNonExistingIdShouldNotDelete() throws Exception {
+		Long id = 1L;
+		when(projectService.deleteProjectById(id)).thenThrow(new NonExistingProjectException());
+		
+		mvc.perform(get("/delete/1"))
+				.andExpect(view().name(INDEX))
+				.andExpect(model().attribute(ERROR, "The specified project does not exist"));
+		
+		verify(projectService, times(1)).deleteProjectById(id);
+	}
+	
 }

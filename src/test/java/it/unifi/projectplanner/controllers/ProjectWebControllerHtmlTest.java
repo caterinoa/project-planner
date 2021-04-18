@@ -19,6 +19,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
+import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
 
@@ -59,8 +61,8 @@ class ProjectWebControllerHtmlTest {
 		assertThat(table.asText()).isEqualTo(
 				"My projects\n" +
 				"ID	Name	Completion percentage\n" + 
-				"1	first	0%\n" + 
-				"2	second	0%"
+				"1	first	0%	Delete\n" + 
+				"2	second	0%	Delete"
 		);
 	}
 	
@@ -76,6 +78,19 @@ class ProjectWebControllerHtmlTest {
 	}
 	
 	@Test
+	void test_HomePage_NewProject_WithExistingNameShouldNotInsert() throws Exception {
+		Project project = new Project("existing project", emptyList());
+		when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException());
+				
+		HtmlPage page = this.webClient.getPage("/");
+		final HtmlForm form = page.getFormByName("new_project_form");
+		form.getInputByName("name").setValueAttribute("existing project");
+		form.getButtonByName("new_project_submit").click();
+		
+		verify(projectService, times(1)).insertNewProject(project);
+	}
+	
+	@Test
 	void test_HomePage_NewProject_WithNoNameShouldNotInsert() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		
@@ -86,5 +101,16 @@ class ProjectWebControllerHtmlTest {
 		verify(projectService, times(0)).insertNewProject(new Project("", emptyList()));
 	}
 
+	@Test
+	void test_HomePage_DeleteProject_ByExistingIdShouldDelete() throws Exception {
+		this.webClient.getPage("/delete/1");
+		verify(projectService, times(1)).deleteProjectById(1L);
+	}
 
+	@Test
+	void test_HomePage_DeleteProject_ByNonExistingIdShouldNotDelete() throws Exception {
+		when(projectService.deleteProjectById(1L)).thenThrow(new NonExistingProjectException());
+		this.webClient.getPage("/delete/1");
+		verify(projectService, times(1)).deleteProjectById(1L);
+	}
 }
