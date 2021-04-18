@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.repositories.ProjectRepository;
 
@@ -44,6 +45,16 @@ public class ProjectService {
 			throw new ConflictingProjectNameException();
 		}
 		return this.projectRepository.save(project);
+	}
+
+	@Transactional
+	public void deleteProjectById(long id) throws NonExistingProjectException {
+		Optional<Project> retrievedProject = this.projectRepository.findById(id);
+		if (retrievedProject.isPresent()) {
+			this.projectRepository.deleteById(id);
+		} else {
+			throw new NonExistingProjectException();
+		}
 	}
 
 }
