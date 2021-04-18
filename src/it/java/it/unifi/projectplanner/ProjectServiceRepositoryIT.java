@@ -3,6 +3,7 @@ package it.unifi.projectplanner;
 import static java.util.Collections.emptyList;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.repositories.ProjectRepository;
 import it.unifi.projectplanner.services.ProjectService;
@@ -26,6 +28,7 @@ class ProjectServiceRepositoryIT {
 
 	@Autowired
 	private ProjectService projectService;
+	
 	@Autowired
 	private ProjectRepository projectRepository;
 
@@ -46,13 +49,26 @@ class ProjectServiceRepositoryIT {
 
 	@Test
 	void test_ServiceCanGetAllProjectsFromRepository() {
-
 		Project first = projectRepository.save(new Project("first", emptyList()));
 		Project second = projectRepository.save(new Project("second", emptyList()));
 		List<Project> savedProjects = asList(first,second);
 		List<Project> retrievedProjects = projectService.getAllProjects();
 
 		assertThat(retrievedProjects).containsAll(savedProjects);
-
 	}
+	
+	@Test
+	void test_ServiceCanDeleteProjectFromRepository() throws NonExistingProjectException {
+		Project saved = projectRepository.save(new Project(SAVED, emptyList()));
+		Long id = saved.getId();
+		projectService.deleteProjectById(id);
+		assertFalse(projectRepository.findById(id).isPresent());
+	}
+	
+	@Test
+	void test_ServiceDoesNotDeleteNonExistingProjectFromRepository() throws NonExistingProjectException {
+		assertThrows(NonExistingProjectException.class,
+				() -> projectService.deleteProjectById(1L));
+	}
+	
 }
