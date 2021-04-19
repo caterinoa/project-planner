@@ -110,5 +110,10 @@ class ProjectServiceTest {
 		assertThrows(NonExistingProjectException.class, () -> projectService.deleteProjectById(PROJECT_ID));
 		verify(projectRepository, times(0)).deleteById(PROJECT_ID);
 	}
-
+	
+	@Test
+	void test_DeleteAllProjects() throws NonExistingProjectException {
+		projectService.deleteAllProjects();
+		verify(projectRepository, times(1)).deleteAll();
+	}
 }
