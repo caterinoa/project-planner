@@ -41,9 +41,8 @@ public class ProjectRestController {
 	}
 	
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ExceptionHandler(NonExistingProjectException.class)
-	public @ResponseBody Project deleteProject(@PathVariable long id) throws NonExistingProjectException {
-		return projectService.deleteProjectById(id);
+	public void deleteProject(@PathVariable Long id) throws NonExistingProjectException {
+		projectService.deleteProjectById(id);
 	}
 	
 	@DeleteMapping(value = "/deleteall")

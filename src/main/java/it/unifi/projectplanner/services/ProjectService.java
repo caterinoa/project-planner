@@ -21,7 +21,7 @@ public class ProjectService {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public Project deleteProjectById(long id) throws NonExistingProjectException {
+	public void deleteProjectById(Long id) throws NonExistingProjectException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 

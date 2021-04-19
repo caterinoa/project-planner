@@ -61,9 +61,9 @@ class ProjectRestControllerTest {
 		Project requestBodyProject = new Project("new", Collections.emptyList());
 		when(projectService.insertNewProject(requestBodyProject))
 				.thenReturn(new Project("new", new ArrayList<>()));
-	    
-        JSONObject body = new JSONObject();
-        body.put("name", "new");
+		
+		JSONObject body = new JSONObject();
+		body.put("name", "new");
 		this.mvc.perform(post("/api/projects/new").content(body.toJSONString()).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -73,17 +73,14 @@ class ProjectRestControllerTest {
 	
 	@Test
 	void test_DeleteProject() throws Exception {
-		when(projectService.deleteProjectById(1)).thenReturn(new Project("to delete", new ArrayList<>()));
-		
-        this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
+		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
         		.andExpect(status().isOk())
-        		.andExpect(jsonPath("name", is("to delete")))
-        		.andExpect(jsonPath("tasks", is(empty())));
+        		.andExpect(jsonPath("$").doesNotExist());
     }
 	
 	@Test
 	void test_DeleteAllProjects() throws Exception {
-        this.mvc.perform(delete("/api/projects/deleteall").accept(MediaType.APPLICATION_JSON))
+		this.mvc.perform(delete("/api/projects/deleteall").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$").doesNotExist());
 	}
