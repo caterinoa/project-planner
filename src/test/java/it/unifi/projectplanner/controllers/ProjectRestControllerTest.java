@@ -3,6 +3,8 @@ package it.unifi.projectplanner.controllers;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,6 +78,7 @@ class ProjectRestControllerTest {
 		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
         		.andExpect(status().isOk())
         		.andExpect(jsonPath("$").doesNotExist());
+		verify(projectService, times(1)).deleteProjectById(1L);
     }
 	
 	@Test
@@ -83,5 +86,6 @@ class ProjectRestControllerTest {
 		this.mvc.perform(delete("/api/projects/deleteall").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$").doesNotExist());
+		verify(projectService, times(1)).deleteAllProjects();
 	}
 }
