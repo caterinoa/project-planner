@@ -81,7 +81,7 @@ class ProjectWebControllerIT {
 		webDriver.findElement(By.name("name")).sendKeys(SAVED_PROJECT);
 		webDriver.findElement(By.name("new_project_submit")).click();
 		
-		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The specified name is already used for another project");
+		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The name '" + SAVED_PROJECT + "' is already used for another project");
 	}
 	
 	@Test
@@ -99,6 +99,6 @@ class ProjectWebControllerIT {
 	@Test
 	void test_HomePage_DeleteNonExistingProject_ShouldShowErrorMessage() {
 		webDriver.get(baseURL + "/delete/1");
-		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The specified project does not exist");
+		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The project with id=1 does not exist");
 	}
 }
