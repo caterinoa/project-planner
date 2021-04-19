@@ -4,8 +4,8 @@ public class ConflictingProjectNameException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public ConflictingProjectNameException() {
-		super("The specified name is already used for another project");
+	public ConflictingProjectNameException(String projectName) {
+		super("The name '" + projectName + "' is already used for another project");
 	}
 
 }
