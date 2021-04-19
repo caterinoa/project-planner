@@ -5,7 +5,6 @@ import io.cucumber.java.en.Then;
 
 public class TaskViewSteps {
 	
-
 	@Given("The Task View is shown")
 	public void the_task_view_is_shown() {
 	    // Write code here that turns the phrase above into concrete actions
@@ -42,7 +41,7 @@ public class TaskViewSteps {
 	    throw new io.cucumber.java.PendingException();
 	}
 
-	@Then("An error is shown containing the name of the selected task")
+	@Then("An error is shown containing the id of the selected task")
 	public void an_error_is_shown_containing_the_name_of_the_selected_task() {
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new io.cucumber.java.PendingException();

@@ -1,7 +1,6 @@
 package it.unifi.projectplanner.bdd.steps;
 
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 
 public class DatabaseSteps {
 	
@@ -17,13 +16,13 @@ public class DatabaseSteps {
 	    throw new io.cucumber.java.PendingException();
 	}
 
-	@When("In the meantime the project has been removed from the database")
+	@Given("A project has been removed from the database")
 	public void in_the_meantime_the_project_has_been_removed_from_the_database() {
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new io.cucumber.java.PendingException();
 	}
 	
-	@When("In the meantime the task has been removed from the database")
+	@Given("A task has been removed from the database")
 	public void in_the_meantime_the_task_has_been_removed_from_the_database() {
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new io.cucumber.java.PendingException();

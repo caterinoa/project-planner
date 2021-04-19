@@ -35,7 +35,7 @@ public class ProjectViewSteps {
 	    throw new io.cucumber.java.PendingException();
 	}
 
-	@Then("An error is shown containing the name of the selected project")
+	@Then("An error is shown containing the id of the selected project")
 	public void an_error_is_shown_containing_the_name_of_the_selected_project() {
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new io.cucumber.java.PendingException();
