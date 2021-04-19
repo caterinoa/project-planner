@@ -2,6 +2,7 @@ package it.unifi.projectplanner.controllers;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -83,13 +84,14 @@ class ProjectWebControllerTest {
 	
     @Test
     void test_NewProject_WithExistingNameShouldNotInsert() throws Exception {
-        Project project = new Project("new", emptyList());
+    	String existingProjectName = "existing project";
+        Project project = new Project(existingProjectName, emptyList());
 
-        when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException());
+        when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException(existingProjectName));
 
-        mvc.perform(post("/save").param("name", "new"))
+        mvc.perform(post("/save").param("name", existingProjectName))
                 .andExpect(view().name(INDEX))
-                .andExpect(model().attribute(ERROR, "The specified name is already used for another project"));
+                .andExpect(model().attribute(ERROR, "The name '" + existingProjectName + "' is already used for another project"));
 
         verify(projectService, times(1)).insertNewProject(project);
     }
@@ -114,11 +116,11 @@ class ProjectWebControllerTest {
 	@Test
 	void test_DeleteProject_ByNonExistingIdShouldNotDelete() throws Exception {
 		Long id = 1L;
-		when(projectService.deleteProjectById(id)).thenThrow(new NonExistingProjectException());
+		doThrow(new NonExistingProjectException(id)).when(projectService).deleteProjectById(id);
 		
 		mvc.perform(get("/delete/1"))
 				.andExpect(view().name(INDEX))
-				.andExpect(model().attribute(ERROR, "The specified project does not exist"));
+				.andExpect(model().attribute(ERROR, "The project with id=" + id + " does not exist"));
 		
 		verify(projectService, times(1)).deleteProjectById(id);
 	}
