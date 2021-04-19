@@ -13,7 +13,7 @@
 		<form name="new_project_form" th:action="@{/save}" method="POST">
 			<p>
 				New project name: <input type="text" name="name" />
-				<button type="submit" name="new_project_submit">New project</button>
+				<button type="submit" name="new_project_submit" id="new_project_submit">New project</button>
 			</p>
 		</form>
 	</div>
@@ -42,7 +42,7 @@
 					<td th:text="${project.id}"></td>
 					<td th:text="${project.name}"></td>
 					<td th:text="${project.completionPercentage} + '%'"></td>
-					<td><a th:href="@{'/delete/' + ${project.id}}">Delete</a></td>
+					<td><a th:id="'delete_project' + ${project.id}" th:href="@{'/delete/' + ${project.id}}">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>
