@@ -1,4 +1,4 @@
-package it.unifi.projectplanner.bdd.steps;
+package it.unifi.projectplanner.bdd;
 
 import io.cucumber.java.en.Given;
 

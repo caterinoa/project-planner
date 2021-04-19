@@ -18,17 +18,17 @@ Feature: Task View
 		Then The task is removed from the list
 		
 	Scenario: Delete a not existing task
+		Given A task has been removed from the database
 		When The user clicks on the "Delete Task" button
-		But In the meantime the task has been removed from the database
-		Then An error is shown containing the name of the selected task
-		And The task is removed from the list
+		Then An error is shown containing the id of the selected task
 		
 	Scenario: Edit a task
 		When The user clicks on the "Edit Task" button
 		Then The Edit Task View is shown
 		
 	Scenario: Edit a not existing task
+		Given A task has been removed from the database
 		When The user clicks on the "Edit Task" button
-		But In the meantime the task has been removed from the database
-		Then An error is shown containing the name of the selected task
-		And The task is removed from the list
+		Then An error is shown containing the id of the selected task
+
+		

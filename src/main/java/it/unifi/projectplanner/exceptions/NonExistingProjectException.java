@@ -4,7 +4,7 @@ public class NonExistingProjectException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public NonExistingProjectException() {
-		super("The specified project does not exist");
+	public NonExistingProjectException(Long id) {
+		super("The project with id=" + id + " does not exist");
 	}
 }

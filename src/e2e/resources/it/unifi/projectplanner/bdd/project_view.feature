@@ -12,23 +12,25 @@ Feature: Project View
 		Given The user provides project name in the text field
 		When The user clicks on the "New Project" button
 		Then The list contains the new project
-		
+	
+	@under_test		
 	Scenario: Delete a project
 		When The user clicks on the "Delete Project" button
 		Then The project is removed from the list
-		
+
+	@under_test
 	Scenario: Delete a not existing project
+		Given A project has been removed from the database
 		When The user clicks on the "Delete Project" button
-		But In the meantime the project has been removed from the database
-		Then An error is shown containing the name of the selected project
-		And The project is removed from the list
+		Then An error is shown containing the id of the selected project
 		
 	Scenario: View tasks of a project
 		When The user clicks on the "View Tasks" button
 		Then The Task View is shown
 		
 	Scenario: View tasks of a not existing project
+		Given A project has been removed from the database
 		When The user clicks on the "View Tasks" button
-		But In the meantime the project has been removed from the database
-		Then An error is shown containing the name of the selected project
-		And The project is removed from the list
+		Then An error is shown containing the id of the selected project
+		
+		

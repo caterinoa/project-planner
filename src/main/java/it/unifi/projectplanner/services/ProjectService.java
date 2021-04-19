@@ -42,7 +42,7 @@ public class ProjectService {
 	public Project insertNewProject(Project project) throws ConflictingProjectNameException {
 		Optional<Project> foundByName = this.projectRepository.findByName(project.getName());
 		if (foundByName.isPresent()) {
-			throw new ConflictingProjectNameException();
+			throw new ConflictingProjectNameException(project.getName());
 		}
 		return this.projectRepository.save(project);
 	}
@@ -53,8 +53,12 @@ public class ProjectService {
 		if (retrievedProject.isPresent()) {
 			this.projectRepository.deleteById(id);
 		} else {
-			throw new NonExistingProjectException();
+			throw new NonExistingProjectException(id);
 		}
+	}
+
+	public void deleteAllProjects() {
+		this.projectRepository.deleteAll();
 	}
 
 }
