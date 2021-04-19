@@ -48,7 +48,7 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public void deleteProjectById(long id) throws NonExistingProjectException {
+	public void deleteProjectById(Long id) throws NonExistingProjectException {
 		Optional<Project> retrievedProject = this.projectRepository.findById(id);
 		if (retrievedProject.isPresent()) {
 			this.projectRepository.deleteById(id);
@@ -57,6 +57,7 @@ public class ProjectService {
 		}
 	}
 
+	@Transactional
 	public void deleteAllProjects() {
 		this.projectRepository.deleteAll();
 	}
