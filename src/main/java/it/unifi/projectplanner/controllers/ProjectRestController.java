@@ -45,6 +45,6 @@ public class ProjectRestController {
 	
 	@DeleteMapping(value = "/deleteall")
 	public void deleteAll() {
-		projectService.deleteAll();
+		projectService.deleteAllProjects();
 	}
 }
