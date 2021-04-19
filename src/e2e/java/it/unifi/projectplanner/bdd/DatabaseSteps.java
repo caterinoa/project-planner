@@ -1,4 +1,4 @@
-package it.unifi.projectplanner.bdd.steps;
+package it.unifi.projectplanner.bdd;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,16 +8,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
-import it.unifi.projectplanner.bdd.ProjectPlannerAppE2E;
 
 public class DatabaseSteps {
 
+	@After
+	public void teardown() {
+		ProjectPlannerAppE2E.webDriver.quit();
+	}
+
 	@Given("The database contains a few projects")
 	public void the_database_contains_a_few_projects() throws JSONException {
-		addTestProjectToTheDB(ProjectPlannerAppE2E.PROJECT_FIXTURE_1_NAME);
-		addTestProjectToTheDB(ProjectPlannerAppE2E.PROJECT_FIXTURE_2_NAME);
+		ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID = addTestProjectToTheDB(ProjectPlannerAppE2E.PROJECT_FIXTURE_1_NAME);
+		ProjectPlannerAppE2E.PROJECT_FIXTURE_2_ID = addTestProjectToTheDB(ProjectPlannerAppE2E.PROJECT_FIXTURE_2_NAME);
 	}
 
 	@Given("The database contains a few tasks for a selected project")
@@ -26,19 +30,19 @@ public class DatabaseSteps {
 		throw new io.cucumber.java.PendingException();
 	}
 
-	@When("In the meantime the project has been removed from the database")
+	@Given("A project has been removed from the database")
 	public void in_the_meantime_the_project_has_been_removed_from_the_database() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		String deleteURL = ProjectPlannerAppE2E.baseURL + "/api/projects/" + ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID;
+		new RestTemplate().delete(deleteURL);
 	}
 
-	@When("In the meantime the task has been removed from the database")
+	@Given("A task has been removed from the database")
 	public void in_the_meantime_the_task_has_been_removed_from_the_database() {
 		// Write code here that turns the phrase above into concrete actions
 		throw new io.cucumber.java.PendingException();
 	}
 
-	private String addTestProjectToTheDB(String name) throws JSONException {
+	private Long addTestProjectToTheDB(String name) throws JSONException {
 		JSONObject body = new JSONObject();
 		body.put("name", name);
 
@@ -46,13 +50,12 @@ public class DatabaseSteps {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
 		
-		System.out.println(ProjectPlannerAppE2E.baseURL + "/api/projects/new");
-		
 		ResponseEntity<String> response = new RestTemplate()
-				.postForEntity("" + ProjectPlannerAppE2E.baseURL + "/api/projects/new", entity, String.class);
+				.postForEntity(ProjectPlannerAppE2E.baseURL + "/api/projects/new", entity, String.class);
 		
 		JSONObject JsonResponse = new JSONObject(response.getBody());
-		return JsonResponse.get("id").toString();
+		String id = JsonResponse.get("id").toString();
+		return Long.parseLong(id);
 	}
 
 }

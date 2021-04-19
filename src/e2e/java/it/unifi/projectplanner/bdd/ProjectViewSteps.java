@@ -1,25 +1,14 @@
-package it.unifi.projectplanner.bdd.steps;
+package it.unifi.projectplanner.bdd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import it.unifi.projectplanner.bdd.ProjectPlannerAppE2E;
 
 public class ProjectViewSteps {
-
-	@Before
-	public static void setupScenario() {
-		WebDriverManager.chromedriver().setup();
-		ProjectPlannerAppE2E.webDriver = new ChromeDriver();
-		ProjectPlannerAppE2E.baseURL = "http://localhost:" + ProjectPlannerAppE2E.port;
-	}
 
 	@After
 	public void teardown() {
@@ -52,14 +41,14 @@ public class ProjectViewSteps {
 
 	@Then("The project is removed from the list")
 	public void the_project_is_removed_from_the_list() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("projects_table")).getText())
+		.doesNotContain(ProjectPlannerAppE2E.PROJECT_FIXTURE_1_NAME);
 	}
 
-	@Then("An error is shown containing the name of the selected project")
+	@Then("An error is shown containing the id of the selected project")
 	public void an_error_is_shown_containing_the_name_of_the_selected_project() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("error")).getText())
+		.isEqualTo("The project with id=" + ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID + " does not exist");
 	}
 
 }
