@@ -77,7 +77,14 @@ class ProjectRestControllerTest {
 		
         this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
         		.andExpect(status().isOk())
-				.andExpect(jsonPath("name", is("to delete")))
-				.andExpect(jsonPath("tasks", is(empty())));
+        		.andExpect(jsonPath("name", is("to delete")))
+        		.andExpect(jsonPath("tasks", is(empty())));
     }
+	
+	@Test
+	void test_DeleteAllProjects() throws Exception {
+        this.mvc.perform(delete("/api/projects/deleteall").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").doesNotExist());
+	}
 }
