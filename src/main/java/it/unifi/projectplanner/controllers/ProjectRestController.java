@@ -45,4 +45,9 @@ public class ProjectRestController {
 	public @ResponseBody Project deleteProject(@PathVariable long id) throws NonExistingProjectException {
 		return projectService.deleteProjectById(id);
 	}
+	
+	@DeleteMapping(value = "/deleteall")
+	public void deleteAll() {
+		projectService.deleteAll();
+	}
 }
