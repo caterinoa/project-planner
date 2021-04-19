@@ -57,7 +57,7 @@ public class ProjectService {
 		}
 	}
 
-	public void deleteAll() {
+	public void deleteAllProjects() {
 		this.projectRepository.deleteAll();
 	}
 
