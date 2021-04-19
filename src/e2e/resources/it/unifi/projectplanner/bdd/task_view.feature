@@ -21,7 +21,6 @@ Feature: Task View
 		When The user clicks on the "Delete Task" button
 		But In the meantime the task has been removed from the database
 		Then An error is shown containing the name of the selected task
-		And The task is removed from the list
 		
 	Scenario: Edit a task
 		When The user clicks on the "Edit Task" button
@@ -31,4 +30,5 @@ Feature: Task View
 		When The user clicks on the "Edit Task" button
 		But In the meantime the task has been removed from the database
 		Then An error is shown containing the name of the selected task
-		And The task is removed from the list
+
+		
