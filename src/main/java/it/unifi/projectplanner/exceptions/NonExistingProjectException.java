@@ -7,4 +7,8 @@ public class NonExistingProjectException extends Exception {
 	public NonExistingProjectException(Long id) {
 		super("The project with id=" + id + " does not exist");
 	}
+
+	public NonExistingProjectException(String name) {
+		super("The project with name = " + name + " does not exist");
+	}
 }
