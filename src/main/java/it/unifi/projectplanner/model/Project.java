@@ -43,6 +43,11 @@ public class Project {
 		this.tasks = tasks;
 		this.completionPercentage = 0;
 	}
+	
+
+	public void addTask(Task task) {
+		this.tasks.add(task);
+	}
 
 	public Long getId() {
 		return id;

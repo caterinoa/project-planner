@@ -26,15 +26,23 @@ public class Task {
 		
 	}
 	
-	public Task(String description) {
+	public Task(String description, Project project) {
 		super();
 		this.description = description;
+		this.project = project;
 		this.completed = false;
 	}
-
-	public Task(Long id, String description) {
+	
+	public Task(Long id, String description, Project project) {
 		super();
 		this.id = id;
+		this.description = description;
+		this.project = project;
+		this.completed = false;
+	}
+	
+	public Task(String description) {
+		super();
 		this.description = description;
 		this.completed = false;
 	}
