@@ -27,4 +27,9 @@ public class TaskService {
 		return this.taskRepository.findByProject(project);
 	}
 
+	@Transactional
+	public Task insertNewTask(Task task) {
+		return taskRepository.save(task);
+	}
+
 }

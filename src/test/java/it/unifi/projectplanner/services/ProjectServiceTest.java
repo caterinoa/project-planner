@@ -1,6 +1,7 @@
 package it.unifi.projectplanner.services;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,7 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,12 +40,11 @@ class ProjectServiceTest {
 
 	private static final Long PROJECT_ID = 1L;
 	private static final String SAVED_PROJECT_NAME = "saved project";
-	private static final Project SAVED_PROJECT = new Project(PROJECT_ID, SAVED_PROJECT_NAME, Collections.emptyList());
-	private static final String SECOND_PROJECT_NAME = "second project";
+	private static final Project SAVED_PROJECT = new Project(PROJECT_ID, SAVED_PROJECT_NAME, emptyList());
 
 	@Test
 	void test_GetAllProjects() {
-		Project secondProject = new Project(SECOND_PROJECT_NAME, Collections.emptyList());
+		Project secondProject = new Project("second project", emptyList());
 		when(projectRepository.findAll()).thenReturn(asList(SAVED_PROJECT, secondProject));
 		assertThat(projectService.getAllProjects()).containsExactly(SAVED_PROJECT, secondProject);
 	}
@@ -78,20 +79,20 @@ class ProjectServiceTest {
 
 	@Test
 	void test_InsertNewProject_WithNonExistingName() throws ConflictingProjectNameException {
-		Project toSave = spy(new Project(SECOND_PROJECT_NAME, Collections.emptyList()));
+		Project toSave = spy(new Project("project to save", emptyList()));
 		when(projectRepository.save(any(Project.class))).thenReturn(SAVED_PROJECT);
 
 		Project result = projectService.insertNewProject(toSave);
 
 		assertThat(result).isSameAs(SAVED_PROJECT);
 		InOrder inOrder = inOrder(toSave, projectRepository);
-		inOrder.verify(projectRepository, times(1)).findByName(SECOND_PROJECT_NAME);
+		inOrder.verify(projectRepository, times(1)).findByName("project to save");
 		inOrder.verify(projectRepository, times(1)).save(toSave);
 	}
 
 	@Test
 	void test_InsertNewProject_WithExistingName() {
-		Project toSave = spy(new Project(SAVED_PROJECT_NAME, Collections.emptyList()));
+		Project toSave = spy(new Project(SAVED_PROJECT_NAME, emptyList()));
 		when(projectRepository.findByName(anyString())).thenReturn(Optional.of(SAVED_PROJECT));
 
 		assertThrows(ConflictingProjectNameException.class, () -> projectService.insertNewProject(toSave));
@@ -119,5 +120,20 @@ class ProjectServiceTest {
 	void test_DeleteAllProjects() throws NonExistingProjectException {
 		projectService.deleteAllProjects();
 		verify(projectRepository, times(1)).deleteAll();
+	}
+
+	@Test
+	void test_InsertNewTaskIntoProject() {
+		Project toUpdate = spy(new Project(SAVED_PROJECT_NAME, new ArrayList<>()));
+		Task toAdd = new Task(1L, "to add", toUpdate);
+		Project updated = new Project(1L, SAVED_PROJECT_NAME, asList(toAdd));
+		when(projectRepository.save(any(Project.class))).thenReturn(updated);
+		
+		Project result = projectService.insertNewTaskIntoProject(toAdd);
+
+		assertThat(result).isSameAs(updated);
+		InOrder inOrder = inOrder(toUpdate, projectRepository);
+		inOrder.verify(toUpdate, times(1)).addTask(toAdd);
+		inOrder.verify(projectRepository, times(1)).save(toUpdate);
 	}
 }

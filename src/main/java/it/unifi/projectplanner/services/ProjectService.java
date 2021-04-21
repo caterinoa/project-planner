@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
 
 @Service
@@ -55,6 +56,13 @@ public class ProjectService {
 	@Transactional
 	public void deleteAllProjects() {
 		this.projectRepository.deleteAll();
+	}
+	
+	@Transactional
+	public Project insertNewTaskIntoProject(Task savedTask) {
+		Project project = savedTask.getProject();
+		project.addTask(savedTask);
+		return projectRepository.save(project);
 	}
 
 }

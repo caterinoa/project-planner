@@ -40,12 +40,6 @@ public class Task {
 		this.project = project;
 		this.completed = false;
 	}
-	
-	public Task(String description) {
-		super();
-		this.description = description;
-		this.completed = false;
-	}
 
 	public Long getId() {
 		return id;
@@ -59,6 +53,10 @@ public class Task {
 		return completed;
 	}
 
+	public Project getProject() {
+		return project;
+	}
+	
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";

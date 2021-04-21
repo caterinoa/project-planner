@@ -20,4 +20,8 @@ public class TaskRepository {
 	public List<Task> findByProject(Project project) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
+
+	public Task save(Task task) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
 }
