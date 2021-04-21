@@ -2,6 +2,7 @@ package it.unifi.projectplanner.model;
 
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ public class Project {
 	private Long id;
 	@Column(nullable = false, unique = true)
 	private String name;
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private Collection<Task> tasks;
 	@Column(nullable = false)
 	private int completionPercentage;
@@ -34,7 +35,7 @@ public class Project {
 		this.tasks = tasks;
 		this.completionPercentage = 0;
 	}
-
+	
 	public Project(Long id, String name, Collection<Task> tasks) {
 		super();
 		this.id = id;
