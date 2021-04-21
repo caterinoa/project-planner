@@ -15,13 +15,8 @@ import it.unifi.projectplanner.repositories.ProjectRepository;
 @Service
 public class ProjectService {
 
-	private ProjectRepository projectRepository;
-
 	@Autowired
-	public ProjectService(ProjectRepository projectRepository) {
-		super();
-		this.projectRepository = projectRepository;
-	}
+	private ProjectRepository projectRepository;
 
 	@Transactional(readOnly = true)
 	public List<Project> getAllProjects() {
@@ -29,13 +24,13 @@ public class ProjectService {
 	}
 
 	@Transactional(readOnly = true)
-	public Project getProjectById(Long id) {
-		return this.projectRepository.findById(id).orElse(null);
+	public Project getProjectById(Long id) throws NonExistingProjectException {
+		return this.projectRepository.findById(id).orElseThrow(() -> new NonExistingProjectException(id));
 	}
-
+	
 	@Transactional(readOnly = true)
-	public Project getProjectByName(String name) {
-		return this.projectRepository.findByName(name).orElse(null);
+	public Project getProjectByName(String name) throws NonExistingProjectException {
+		return this.projectRepository.findByName(name).orElseThrow(() -> new NonExistingProjectException(name));
 	}
 
 	@Transactional

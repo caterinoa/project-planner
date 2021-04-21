@@ -49,7 +49,7 @@ class ProjectServiceTest {
 	}
 
 	@Test
-	void test_GetProjectById_Found() {
+	void test_GetProjectById_Found() throws NonExistingProjectException {
 		when(projectRepository.findById(PROJECT_ID)).thenReturn(Optional.of(SAVED_PROJECT));
 		assertThat(projectService.getProjectById(PROJECT_ID)).isSameAs(SAVED_PROJECT);
 	}
@@ -57,19 +57,23 @@ class ProjectServiceTest {
 	@Test
 	void test_GetProjectById_NotFound() {
 		when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
-		assertThat(projectService.getProjectById(PROJECT_ID)).isNull();
+		assertThrows(NonExistingProjectException.class, () -> {
+			projectService.getProjectById(PROJECT_ID);
+		});
 	}
 
 	@Test
-	void test_GetProjectByName_Found() {
+	void test_GetProjectByName_Found() throws NonExistingProjectException {
 		when(projectRepository.findByName(anyString())).thenReturn(Optional.of(SAVED_PROJECT));
 		assertThat(projectService.getProjectByName(SAVED_PROJECT_NAME)).isSameAs(SAVED_PROJECT);
 	}
 
 	@Test
-	void test_GetProjectByName_NotFound() {
+	void test_GetProjectByName_NotFound() throws NonExistingProjectException {
 		when(projectRepository.findByName(anyString())).thenReturn(Optional.empty());
-		assertThat(projectService.getProjectByName(SAVED_PROJECT_NAME)).isNull();
+		assertThrows(NonExistingProjectException.class, () -> {
+			projectService.getProjectByName(SAVED_PROJECT_NAME);
+		});
 	}
 
 	@Test
@@ -84,33 +88,33 @@ class ProjectServiceTest {
 		inOrder.verify(projectRepository, times(1)).findByName(SECOND_PROJECT_NAME);
 		inOrder.verify(projectRepository, times(1)).save(toSave);
 	}
-	
+
 	@Test
 	void test_InsertNewProject_WithExistingName() {
 		Project toSave = spy(new Project(SAVED_PROJECT_NAME, Collections.emptyList()));
 		when(projectRepository.findByName(anyString())).thenReturn(Optional.of(SAVED_PROJECT));
 
 		assertThrows(ConflictingProjectNameException.class, () -> projectService.insertNewProject(toSave));
-		
+
 		InOrder inOrder = inOrder(toSave, projectRepository);
 		inOrder.verify(projectRepository, times(1)).findByName(SAVED_PROJECT_NAME);
 		inOrder.verify(projectRepository, times(0)).save(toSave);
 	}
-	
+
 	@Test
 	void test_DeleteProjectById_ExistingProject() throws NonExistingProjectException {
 		when(projectRepository.findById(anyLong())).thenReturn(Optional.of(SAVED_PROJECT));
 		projectService.deleteProjectById(PROJECT_ID);
 		verify(projectRepository, times(1)).deleteById(PROJECT_ID);
 	}
-	
+
 	@Test
 	void test_DeleteProjectById_NotExistingProject() throws NonExistingProjectException {
 		when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 		assertThrows(NonExistingProjectException.class, () -> projectService.deleteProjectById(PROJECT_ID));
 		verify(projectRepository, times(0)).deleteById(PROJECT_ID);
 	}
-	
+
 	@Test
 	void test_DeleteAllProjects() throws NonExistingProjectException {
 		projectService.deleteAllProjects();

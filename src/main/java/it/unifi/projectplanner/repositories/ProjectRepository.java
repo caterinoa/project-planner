@@ -11,7 +11,7 @@ import it.unifi.projectplanner.model.Project;
 public class ProjectRepository {
 
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";
-	
+
 	public List<Project> findAll() {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
@@ -20,20 +20,20 @@ public class ProjectRepository {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public Optional<Project> findByName(String projectFixture1Name) {
+	public Optional<Project> findByName(String name) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
 	public Project save(Project project) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
-	
+
 	public void deleteById(Long id) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
 	public void deleteAll() {
-		 throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
 }
