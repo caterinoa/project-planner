@@ -26,6 +26,19 @@ public class Task {
 	public Task(String description) {
 		super();
 		this.description = description;
+		this.completed = false;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public boolean isCompleted() {
+		return completed;
 	}
 
 	@Override
