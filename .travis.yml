@@ -21,7 +21,7 @@ matrix:
   include:
     - jdk: openjdk8
       if: type IN (push) AND branch NOT IN (master, integration)
-      script: ./mvnw clean verify -Pjacoco -Ppitest && ./mvnw coveralls:report
+      script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report
     - jdk: openjdk8
       if: type IN (push) AND branch IN (master, integration)
       script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report
@@ -30,7 +30,7 @@ matrix:
       script: ./mvnw clean verify -Pjacoco && ./mvnw verify -Pe2e-tests && ./mvnw coveralls:report
     - jdk: openjdk11
       if: type IN (push) AND branch NOT IN (master, integration)
-      script: ./mvnw clean verify -Pjacoco -Ppitest && ./mvnw coveralls:report sonar:sonar      
+      script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report sonar:sonar      
     - jdk: openjdk11
       if: type IN (push) AND branch IN (master, integration)
       script: ./mvnw clean verify -Pjacoco && ./mvnw coveralls:report sonar:sonar
