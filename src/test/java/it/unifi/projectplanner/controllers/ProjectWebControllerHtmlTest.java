@@ -24,6 +24,7 @@ import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
+import it.unifi.projectplanner.services.TaskService;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ProjectWebController.class)
@@ -34,6 +35,8 @@ class ProjectWebControllerHtmlTest {
 
 	@MockBean
 	private ProjectService projectService;
+	@MockBean
+	private TaskService taskService;
 	
 	@Test
 	void test_HomePage_Title() throws Exception {

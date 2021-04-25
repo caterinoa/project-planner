@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Project tasks</title>
+</head>
+
+<body>
+
+	<h1>Project planner</h1>
+	
+	<div>
+		<form name="new_task_form" th:action="@{/savetask}" method="POST">
+			<p>
+				New task description: <input type="text" name="description" />
+				<button type="submit" name="new_task_submit" id="new_task_submit">New Task</button>
+			</p>
+		</form>
+	</div>
+	
+	<div th:unless="${error == null || error.empty}">
+		<p th:text="${error}"></p>
+	</div>
+	
+</body>
+</html>

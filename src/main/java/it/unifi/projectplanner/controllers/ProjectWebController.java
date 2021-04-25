@@ -12,29 +12,55 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import it.unifi.projectplanner.dto.ProjectDTO;
+import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
+import it.unifi.projectplanner.services.TaskService;
 
 @Controller
 public class ProjectWebController {
 
 	private static final String INDEX = "index";
 	private static final String REDIRECT = "redirect:/";
-	private static final String PROJECTS = "projects";
-	private static final String ERROR = "error";
-	private static final String MESSAGE = "message";
+	private static final String PROJECT_TASKS = "projectTasks";
+	private static final String REDIRECT_PROJECT_TASKS = "redirect:/projectTasks";
+	private static final String PROJECTS_ATTRIBUTE = "projects";
+	private static final String PROJECT_TASKS_ATTRIBUTE = "tasks";
+	private static final String ERROR_ATTRIBUTE = "error";
+	private static final String MESSAGE_ATTRIBUTE = "message";
 
 	@Autowired
 	private ProjectService projectService;
+	@Autowired
+	private TaskService taskService;
 
 	@GetMapping("/")
 	public String index(Model model) {
 		List<Project> allProjects = projectService.getAllProjects();
-		model.addAttribute(PROJECTS, allProjects);
-		model.addAttribute(MESSAGE, allProjects.isEmpty() ? "No projects" : "");
+		model.addAttribute(PROJECTS_ATTRIBUTE, allProjects);
+		model.addAttribute(MESSAGE_ATTRIBUTE, allProjects.isEmpty() ? "No projects" : "");
 		return INDEX;
+	}
+	
+	@GetMapping("/projectTasks/{id}")
+	public String viewProjectTasks(@PathVariable Long id, Model model) {
+		String page = INDEX;
+		List<Task> allProjectTasks;
+		try {
+			allProjectTasks = taskService.getAllProjectTasks(id);
+//			allProjectTasks = projectService.getProjectById(id).getTasks();
+			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, allProjectTasks);
+			model.addAttribute(MESSAGE_ATTRIBUTE, allProjectTasks.isEmpty() ? "No tasks" : "");
+			page = PROJECT_TASKS;
+		} catch (NonExistingProjectException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			List<Project> allProjects = projectService.getAllProjects();
+			model.addAttribute(PROJECTS_ATTRIBUTE, allProjects);
+		}
+		return page;
 	}
 
 	@PostMapping("/save")
@@ -42,16 +68,39 @@ public class ProjectWebController {
 		String name = projectDTO.getName();
 		String page = INDEX;
 		if (name == null) {
-			model.addAttribute(ERROR, "The project name should not be empty");
-			model.addAttribute(PROJECTS, projectService.getAllProjects());
+			model.addAttribute(ERROR_ATTRIBUTE, "The project name should not be empty");
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 		} else {
 			try {
 				projectService.insertNewProject(new Project(name, new ArrayList<>()));
 				page = REDIRECT;
 			} catch (ConflictingProjectNameException e) {
-				model.addAttribute(ERROR, e.getMessage());
-				model.addAttribute(PROJECTS, projectService.getAllProjects());
+				model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+				model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 			}
+		}
+		return page;
+	}
+
+	@PostMapping("/projectTasks/{projectId}/savetask")
+	public String saveTaskIntoProject(@ModelAttribute("projectId") Long projectId,
+			@ModelAttribute("description") TaskDTO taskDTO, Model model) {
+		String description = taskDTO.getDescription();
+		String page = PROJECT_TASKS;
+		Project project;
+		try {
+			project = projectService.getProjectById(projectId);
+		} catch (NonExistingProjectException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
+			return INDEX;
+		}
+		if (description == null) {
+			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
+			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
+		} else {
+			projectService.insertNewTaskIntoProject(new Task(description, project));
+			page = REDIRECT_PROJECT_TASKS + "/" + projectId.toString();
 		}
 		return page;
 	}
@@ -63,8 +112,8 @@ public class ProjectWebController {
 			projectService.deleteProjectById(id);
 			page = REDIRECT;
 		} catch (NonExistingProjectException e) {
-			model.addAttribute(ERROR, e.getMessage());
-			model.addAttribute(PROJECTS, projectService.getAllProjects());
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 		}
 		return page;
 	}
