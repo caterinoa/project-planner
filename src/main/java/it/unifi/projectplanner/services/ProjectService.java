@@ -12,12 +12,15 @@ import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
+import it.unifi.projectplanner.repositories.TaskRepository;
 
 @Service
 public class ProjectService {
 
 	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
+	private TaskRepository taskRepository;
 
 	@Transactional(readOnly = true)
 	public List<Project> getAllProjects() {
@@ -59,7 +62,8 @@ public class ProjectService {
 	}
 	
 	@Transactional
-	public Project insertNewTaskIntoProject(Task savedTask) {
+	public Project insertNewTaskIntoProject(Task task) {
+		Task savedTask = taskRepository.save(task);
 		Project project = savedTask.getProject();
 		project.addTask(savedTask);
 		return projectRepository.save(project);

@@ -28,12 +28,15 @@ import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
+import it.unifi.projectplanner.repositories.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProjectServiceTest {
 
 	@Mock
 	private ProjectRepository projectRepository;
+	@Mock
+	private TaskRepository taskRepository;
 
 	@InjectMocks
 	private ProjectService projectService;
@@ -103,6 +106,26 @@ class ProjectServiceTest {
 	}
 
 	@Test
+	void test_InsertNewTaskIntoProject() {
+		Project toUpdate = spy(new Project(1L, SAVED_PROJECT_NAME, new ArrayList<>()));
+		Task savedToAdd = spy(new Task(1L, "to add", toUpdate));
+		Project updated = new Project(1L, SAVED_PROJECT_NAME, asList(savedToAdd));
+		
+		when(taskRepository.save(any(Task.class))).thenReturn(savedToAdd);
+		when(projectRepository.save(any(Project.class))).thenReturn(updated);
+		
+		Task toAdd = new Task("to add", toUpdate);
+		Project result = projectService.insertNewTaskIntoProject(toAdd);
+		
+		assertThat(result).isSameAs(updated);
+		InOrder inOrder = inOrder(toUpdate, savedToAdd, projectRepository, taskRepository);
+		inOrder.verify(taskRepository, times(1)).save(toAdd);
+		inOrder.verify(savedToAdd, times(1)).getProject();
+		inOrder.verify(toUpdate, times(1)).addTask(savedToAdd);
+		inOrder.verify(projectRepository, times(1)).save(toUpdate);
+	}
+	
+	@Test
 	void test_DeleteProjectById_ExistingProject() throws NonExistingProjectException {
 		when(projectRepository.findById(anyLong())).thenReturn(Optional.of(SAVED_PROJECT));
 		projectService.deleteProjectById(PROJECT_ID);
@@ -122,18 +145,4 @@ class ProjectServiceTest {
 		verify(projectRepository, times(1)).deleteAll();
 	}
 
-	@Test
-	void test_InsertNewTaskIntoProject() {
-		Project toUpdate = spy(new Project(SAVED_PROJECT_NAME, new ArrayList<>()));
-		Task toAdd = new Task(1L, "to add", toUpdate);
-		Project updated = new Project(1L, SAVED_PROJECT_NAME, asList(toAdd));
-		when(projectRepository.save(any(Project.class))).thenReturn(updated);
-		
-		Project result = projectService.insertNewTaskIntoProject(toAdd);
-
-		assertThat(result).isSameAs(updated);
-		InOrder inOrder = inOrder(toUpdate, projectRepository);
-		inOrder.verify(toUpdate, times(1)).addTask(toAdd);
-		inOrder.verify(projectRepository, times(1)).save(toUpdate);
-	}
 }

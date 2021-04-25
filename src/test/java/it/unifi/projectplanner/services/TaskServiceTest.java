@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -17,9 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.exceptions.NonExistingTaskException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
+import it.unifi.projectplanner.repositories.ProjectRepository;
 import it.unifi.projectplanner.repositories.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +27,8 @@ class TaskServiceTest {
 
 	@Mock
 	private TaskRepository taskRepository;
+	@Mock
+	private ProjectRepository projectRepository;
 
 	@InjectMocks
 	private TaskService taskService;
@@ -52,20 +54,21 @@ class TaskServiceTest {
 	}
 
 	@Test
-	void test_GetAllProjectTasks() {
+	void test_GetAllProjectTasks_OfExistingProject() throws NonExistingProjectException {
+		Project project = new Project(1L, "project", asList(SAVED_TASK, SAVED_TASK_2));
+		when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
 		when(taskRepository.findByProject(any(Project.class))).thenReturn(asList(SAVED_TASK, SAVED_TASK_2));
 		
-		Project project = new Project("project", asList(SAVED_TASK, SAVED_TASK_2));
-		assertThat(taskService.getAllProjectTasks(project)).isEqualTo(asList(SAVED_TASK, SAVED_TASK_2));
+		assertThat(taskService.getAllProjectTasks(1L)).isEqualTo(asList(SAVED_TASK, SAVED_TASK_2));
 	}
 	
 	@Test
-	void test_InsertNewTask() {
-		Task toSave = new Task("task to save", null);
-		when(taskRepository.save(any(Task.class))).thenReturn(SAVED_TASK);
-		
-		Task result = taskService.insertNewTask(toSave);
-		assertThat(result).isSameAs(SAVED_TASK);
-		verify(taskRepository, times(1)).save(toSave);
+	void test_GetAllProjectTasks_OfNotExistingProject() throws NonExistingProjectException {
+		Long id = 1L;
+		when(projectRepository.findById(id)).thenReturn(Optional.empty());
+		assertThrows(NonExistingProjectException.class, () -> {
+			taskService.getAllProjectTasks(id);
+		});
 	}
+
 }
