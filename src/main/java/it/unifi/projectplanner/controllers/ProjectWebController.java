@@ -28,6 +28,7 @@ public class ProjectWebController {
 	private static final String PROJECT_TASKS = "projectTasks";
 	private static final String REDIRECT_PROJECT_TASKS = "redirect:/projectTasks";
 	private static final String PROJECTS_ATTRIBUTE = "projects";
+	private static final String PROJECT_ID_ATTRIBUTE = "project_id";
 	private static final String PROJECT_TASKS_ATTRIBUTE = "tasks";
 	private static final String ERROR_ATTRIBUTE = "error";
 	private static final String MESSAGE_ATTRIBUTE = "message";
@@ -45,14 +46,14 @@ public class ProjectWebController {
 		return INDEX;
 	}
 	
-	@GetMapping("/projectTasks/{id}")
-	public String viewProjectTasks(@PathVariable Long id, Model model) {
+	@GetMapping("/projectTasks/{projectId}")
+	public String viewProjectTasks(@PathVariable Long projectId, Model model) {
 		String page = INDEX;
 		List<Task> allProjectTasks;
 		try {
-			allProjectTasks = taskService.getAllProjectTasks(id);
-//			allProjectTasks = projectService.getProjectById(id).getTasks();
+			allProjectTasks = taskService.getAllProjectTasks(projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, allProjectTasks);
+			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(MESSAGE_ATTRIBUTE, allProjectTasks.isEmpty() ? "No tasks" : "");
 			page = PROJECT_TASKS;
 		} catch (NonExistingProjectException e) {
@@ -83,7 +84,7 @@ public class ProjectWebController {
 	}
 
 	@PostMapping("/projectTasks/{projectId}/savetask")
-	public String saveTaskIntoProject(@ModelAttribute("projectId") Long projectId,
+	public String saveTaskIntoProject(@PathVariable("projectId") Long projectId,
 			@ModelAttribute("description") TaskDTO taskDTO, Model model) {
 		String description = taskDTO.getDescription();
 		String page = PROJECT_TASKS;
@@ -97,6 +98,7 @@ public class ProjectWebController {
 		}
 		if (description == null) {
 			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
+			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
 		} else {
 			projectService.insertNewTaskIntoProject(new Task(description, project));

@@ -9,8 +9,10 @@
 
 	<h1>Project planner</h1>
 	
+	<h3 th:text="'Project ' + ${project_id} + ' tasks'"></h3>
+	
 	<div>
-		<form name="new_task_form" th:action="@{/savetask}" method="POST">
+		<form name="new_task_form" th:action="@{'/projectTasks/' + ${project_id} + '/savetask'}" method="POST">
 			<p>
 				New task description: <input type="text" name="description" />
 				<button type="submit" name="new_task_submit" id="new_task_submit">New Task</button>
@@ -20,6 +22,34 @@
 	
 	<div th:unless="${error == null || error.empty}">
 		<p th:text="${error}"></p>
+	</div>
+	
+	<!-- IF NO TASKS SHOWS MESSAGE-->
+	<div th:unless="${message == null || message.empty}">
+		<p th:text="${message}"></p>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${tasks.empty}">
+		<table id="tasks_table">
+			<caption>Project tasks</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Description</th>
+					<th scope="col">Completed</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="task : ${tasks}">
+					<td th:text="${task.id}"></td>
+					<td th:text="${task.description}"></td>
+					<td th:if="${task.completed}==false">No</td>
+					<td th:if="${task.completed}==true">Yes</td>
+					<td><a th:id="'edit_task' + ${task.id}" th:href="@{'/edit_tasks/' + ${task.id}}">View tasks</a></td>
+					<td><a th:id="'delete_task' + ${task.id}" th:href="@{'/delete_task/' + ${task.id}}">Delete</a></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	
 </body>

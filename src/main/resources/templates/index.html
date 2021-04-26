@@ -42,6 +42,7 @@
 					<td th:text="${project.id}"></td>
 					<td th:text="${project.name}"></td>
 					<td th:text="${project.completionPercentage} + '%'"></td>
+					<td><a th:id="'view_project_tasks' + ${project.id}" th:href="@{'/view_tasks/' + ${project.id}}">View tasks</a></td>
 					<td><a th:id="'delete_project' + ${project.id}" th:href="@{'/delete/' + ${project.id}}">Delete</a></td>
 				</tr>
 			</tbody>

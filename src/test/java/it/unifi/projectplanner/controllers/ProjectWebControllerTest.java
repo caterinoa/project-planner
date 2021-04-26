@@ -38,6 +38,7 @@ class ProjectWebControllerTest {
 	private static final String REDIRECT = "redirect:/";
 	private static final String PROJECT_TASKS = "projectTasks";
 	private static final String REDIRECT_PROJECT_TASKS = "redirect:/projectTasks";
+	private static final String PROJECT_ID_ATTRIBUTE = "project_id";
 	private static final String ERROR_ATTRIBUTE = "error";
 	private static final String MESSAGE_ATTRIBUTE = "message";
 
@@ -157,6 +158,7 @@ class ProjectWebControllerTest {
     			.param("projectId", "1")
     			.param("description", "new task"))
     			.andExpect(view().name(REDIRECT_PROJECT_TASKS + "/1"));
+    			
 		verify(projectService, times(1)).insertNewTaskIntoProject(new Task("new task", project));
     }
 	
@@ -183,6 +185,7 @@ class ProjectWebControllerTest {
 				.param("projectId", "1")
 				.param("description", ""))
 				.andExpect(view().name(PROJECT_TASKS))
+				.andExpect(model().attribute(PROJECT_ID_ATTRIBUTE, 1L))
 				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The task description should not be empty"));
 				
 		verify(projectService, times(0)).insertNewTaskIntoProject(new Task("new task", project));
