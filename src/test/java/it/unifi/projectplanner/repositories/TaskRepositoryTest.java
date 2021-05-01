@@ -50,7 +50,7 @@ class TaskRepositoryTest {
 
 	@Test
 	void test_FindByProject() {
-		Project savedProject = new Project("project", new ArrayList<Task>());
+		Project savedProject = projectRepository.save(new Project("project", new ArrayList<Task>()));
 		Task savedTask = taskRepository.save(new Task(SAVED_TASK_DESCRIPTION_1, savedProject));
 		Task savedTask2 = taskRepository.save(new Task(SAVED_TASK_DESCRIPTION_2, savedProject));
 		savedProject.addTask(savedTask);
