@@ -10,18 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
+import it.unifi.projectplanner.repositories.TaskRepository;
 
 @Service
 public class ProjectService {
 
-	private ProjectRepository projectRepository;
-
 	@Autowired
-	public ProjectService(ProjectRepository projectRepository) {
-		super();
-		this.projectRepository = projectRepository;
-	}
+	private ProjectRepository projectRepository;
+	@Autowired
+	private TaskRepository taskRepository;
 
 	@Transactional(readOnly = true)
 	public List<Project> getAllProjects() {
@@ -29,13 +28,13 @@ public class ProjectService {
 	}
 
 	@Transactional(readOnly = true)
-	public Project getProjectById(Long id) {
-		return this.projectRepository.findById(id).orElse(null);
+	public Project getProjectById(Long id) throws NonExistingProjectException {
+		return this.projectRepository.findById(id).orElseThrow(() -> new NonExistingProjectException(id));
 	}
-
+	
 	@Transactional(readOnly = true)
-	public Project getProjectByName(String name) {
-		return this.projectRepository.findByName(name).orElse(null);
+	public Project getProjectByName(String name) throws NonExistingProjectException {
+		return this.projectRepository.findByName(name).orElseThrow(() -> new NonExistingProjectException(name));
 	}
 
 	@Transactional
@@ -48,7 +47,7 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public void deleteProjectById(long id) throws NonExistingProjectException {
+	public void deleteProjectById(Long id) throws NonExistingProjectException {
 		Optional<Project> retrievedProject = this.projectRepository.findById(id);
 		if (retrievedProject.isPresent()) {
 			this.projectRepository.deleteById(id);
@@ -57,8 +56,17 @@ public class ProjectService {
 		}
 	}
 
+	@Transactional
 	public void deleteAllProjects() {
 		this.projectRepository.deleteAll();
+	}
+	
+	@Transactional
+	public Project insertNewTaskIntoProject(Task task) {
+		Task savedTask = taskRepository.save(task);
+		Project project = savedTask.getProject();
+		project.addTask(savedTask);
+		return projectRepository.save(project);
 	}
 
 }
