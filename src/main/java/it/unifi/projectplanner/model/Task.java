@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +17,8 @@ public class Task {
 	private Long id;
 	@Column(nullable = false)
 	private String description;
+	@ManyToOne
+	private Project project;
 	@Column(nullable = false)
 	private boolean completed;
 
@@ -26,11 +29,44 @@ public class Task {
 	public Task(String description) {
 		super();
 		this.description = description;
+		this.completed = false;
+	}
+
+	public Task(String description, Project project) {
+		super();
+		this.description = description;
+		this.project = project;
+		this.completed = false;
+	}
+	
+	public Task(Long id, String description, Project project) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.project = project;
+		this.completed = false;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public boolean isCompleted() {
+		return completed;
 	}
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";
+		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + ", project=" + project
+				+ "]";
 	}
 
 	@Override
@@ -40,6 +76,7 @@ public class Task {
 		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((project == null) ? 0 : project.hashCode());
 		return result;
 	}
 
@@ -63,6 +100,11 @@ public class Task {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
+			return false;
+		if (project == null) {
+			if (other.project != null)
+				return false;
+		} else if (!project.equals(other.project))
 			return false;
 		return true;
 	}

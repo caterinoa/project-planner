@@ -4,8 +4,6 @@ public class ProjectDTO {
 	
 	private String name;
 	
-	
-
 	public ProjectDTO() {
 		super();
 	}

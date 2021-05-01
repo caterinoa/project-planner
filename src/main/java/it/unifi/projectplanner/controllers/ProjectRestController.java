@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.unifi.projectplanner.dto.ProjectDTO;
+import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
+import it.unifi.projectplanner.services.TaskService;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -27,20 +29,32 @@ public class ProjectRestController {
 
 	@Autowired
 	private ProjectService projectService;
+	@Autowired
+	private TaskService taskService;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Project> allProjects() {
+	public @ResponseBody List<Project> allProjects() {
 		return projectService.getAllProjects();
 	}
 	
+	@GetMapping(value = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<Task> allProjectTasks(@PathVariable Long projectId) throws NonExistingProjectException {
+		return taskService.getAllProjectTasks(projectId);
+	}
+	
 	@PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ExceptionHandler(ConflictingProjectNameException.class)
 	public @ResponseBody Project newProject(@RequestBody ProjectDTO projectDTO) throws ConflictingProjectNameException {
 		Project project = new Project(projectDTO.getName(), new ArrayList<>());
 		return projectService.insertNewProject(project);
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/{projectId}/newtask", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Project newProjectTask(@RequestBody TaskDTO taskDTO, @PathVariable Long projectId) throws NonExistingProjectException {
+		Project project = projectService.getProjectById(projectId);
+		return projectService.insertNewTaskIntoProject(new Task(taskDTO.getDescription(), project));
+	}
+	
+	@DeleteMapping(value = "/{id}")
 	public void deleteProject(@PathVariable Long id) throws NonExistingProjectException {
 		projectService.deleteProjectById(id);
 	}
