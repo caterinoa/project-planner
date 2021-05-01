@@ -144,11 +144,4 @@ class ProjectServiceTest {
 		projectService.deleteAllProjects();
 		verify(projectRepository, times(1)).deleteAll();
 	}
-
-	@Test
-	void test_DeleteAllProjects() throws NonExistingProjectException {
-		projectService.deleteAllProjects();
-		verify(projectRepository, times(1)).deleteAll();
-	}
-
 }

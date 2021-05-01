@@ -59,6 +59,10 @@ public class Task {
 		return completed;
 	}
 
+	public Project getProject() {
+		return project;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";
