@@ -65,7 +65,8 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";
+		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + ", project=" + project
+				+ "]";
 	}
 
 	@Override
@@ -98,6 +99,11 @@ public class Task {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
+			return false;
+		if (project == null) {
+			if (other.project != null)
+				return false;
+		} else if (!project.equals(other.project))
 			return false;
 		return true;
 	}
