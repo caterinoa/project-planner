@@ -1,6 +1,6 @@
 package it.unifi.projectplanner.services;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class TaskService {
 	}
 
 	@Transactional(readOnly = true)
-	public Collection<Task> getAllProjectTasks(Long projectId) throws NonExistingProjectException {
+	public List<Task> getAllProjectTasks(Long projectId) throws NonExistingProjectException {
 		Optional<Project> project = projectRepository.findById(projectId);
 		if (!project.isPresent()) {
 			throw new NonExistingProjectException(projectId);
