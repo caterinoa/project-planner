@@ -109,15 +109,15 @@ class ProjectServiceTest {
 	void test_InsertNewTaskIntoProject() {
 		Project toUpdate = spy(new Project(1L, SAVED_PROJECT_NAME, new ArrayList<>()));
 		Task savedToAdd = spy(new Task(1L, "to add", toUpdate));
-		Project updated = new Project(1L, SAVED_PROJECT_NAME, asList(savedToAdd));
+		toUpdate.addTask(savedToAdd);
 		
 		when(taskRepository.save(any(Task.class))).thenReturn(savedToAdd);
-		when(projectRepository.save(any(Project.class))).thenReturn(updated);
+		when(projectRepository.save(any(Project.class))).thenReturn(toUpdate);
 		
 		Task toAdd = new Task("to add", toUpdate);
-		Project result = projectService.insertNewTaskIntoProject(toAdd);
+		Project updated = projectService.insertNewTaskIntoProject(toAdd);
 		
-		assertThat(result).isSameAs(updated);
+		assertThat(updated).isSameAs(toUpdate);
 		InOrder inOrder = inOrder(toUpdate, savedToAdd, projectRepository, taskRepository);
 		inOrder.verify(taskRepository, times(1)).save(toAdd);
 		inOrder.verify(savedToAdd, times(1)).getProject();
