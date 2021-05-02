@@ -43,7 +43,7 @@ public class ProjectRestController {
 	@PostMapping(value = "/{projectId}/newtask", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Project newProjectTask(@RequestBody TaskDTO taskDTO, @PathVariable Long projectId) throws NonExistingProjectException {
 		Project project = projectService.getProjectById(projectId);
-		return projectService.insertNewTaskIntoProject(new Task(taskDTO.getDescription(), project));
+		return projectService.insertNewTaskIntoProject(new Task(taskDTO.getDescription(), project), project);
 	}
 	
 	@DeleteMapping(value = "/{id}")
