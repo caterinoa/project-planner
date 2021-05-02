@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,14 +19,44 @@ public class Task {
 	private String description;
 	@Column(nullable = false)
 	private boolean completed;
+	@ManyToOne
+	private Project project;
 
 	public Task() {
 		
 	}
 	
+	public Task(String description, Project project) {
+		super();
+		this.description = description;
+		this.project = project;
+		this.completed = false;
+	}
+	
+	public Task(Long id, String description, Project project) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.project = project;
+		this.completed = false;
+	}
+	
 	public Task(String description) {
 		super();
 		this.description = description;
+		this.completed = false;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public boolean isCompleted() {
+		return completed;
 	}
 
 	@Override

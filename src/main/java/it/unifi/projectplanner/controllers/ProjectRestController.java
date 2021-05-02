@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.unifi.projectplanner.dto.ProjectDTO;
+import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
 
 @RestController
@@ -28,7 +30,7 @@ public class ProjectRestController {
 	private ProjectService projectService;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Project> allProjects() {
+	public @ResponseBody List<Project> allProjects() {
 		return projectService.getAllProjects();
 	}
 	
@@ -38,7 +40,13 @@ public class ProjectRestController {
 		return projectService.insertNewProject(project);
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/{projectId}/newtask", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Project newProjectTask(@RequestBody TaskDTO taskDTO, @PathVariable Long projectId) throws NonExistingProjectException {
+		Project project = projectService.getProjectById(projectId);
+		return projectService.insertNewTaskIntoProject(new Task(taskDTO.getDescription(), project), project);
+	}
+	
+	@DeleteMapping(value = "/{id}")
 	public void deleteProject(@PathVariable Long id) throws NonExistingProjectException {
 		projectService.deleteProjectById(id);
 	}

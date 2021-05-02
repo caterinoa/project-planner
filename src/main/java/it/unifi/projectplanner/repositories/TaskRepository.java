@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.unifi.projectplanner.model.Project;
+import it.unifi.projectplanner.model.Task;
 
-public interface ProjectRepository extends JpaRepository<Project, Long>{
+public interface TaskRepository extends JpaRepository<Task, Long>{
 	
-	public List<Project> findAll();
-	public Optional<Project> findByName(String name);
-	public Optional<Project> findById(Long id);
+	public Optional<Task> findById(Long id);
+	public List<Task> findByProject(Project project);
 	
 }

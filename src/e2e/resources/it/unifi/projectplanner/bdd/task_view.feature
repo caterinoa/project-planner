@@ -8,6 +8,7 @@ Feature: Task View
 		And The id of the project is shown
 		And A list is shown containing the tasks that are stored in the database for the project 
 	
+	@under_test
 	Scenario: Add a new task
 		Given The user provides task description in the text field
 		When The user clicks on the "New Task" button

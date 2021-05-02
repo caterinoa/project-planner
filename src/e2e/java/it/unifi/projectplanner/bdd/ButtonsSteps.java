@@ -13,6 +13,10 @@ public class ButtonsSteps {
 			buttonName = "new_project_submit";
 		} else if (buttonText.equals("Delete Project")) {
 			buttonName = "delete_project" + ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID.toString();
+		} else if (buttonText.equals("View Tasks")) {
+			buttonName = "view_project_tasks" + ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID.toString();
+		} else if (buttonText.equals("New Task")) {
+			buttonName = "new_task_submit";
 		}
 		ProjectPlannerAppE2E.webDriver.findElement(By.id(buttonName)).click();
 	}

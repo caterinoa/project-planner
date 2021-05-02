@@ -25,9 +25,10 @@ public class DatabaseSteps {
 	}
 
 	@Given("The database contains a few tasks for a selected project")
-	public void the_database_contains_a_few_tasks_for_a_selected_project() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+	public void the_database_contains_a_few_tasks_for_a_selected_project() throws JSONException {
+		ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID = addTestProjectToTheDB(ProjectPlannerAppE2E.PROJECT_FIXTURE_1_NAME);
+		addTestTasksToTheDB(ProjectPlannerAppE2E.TASK_FIXTURE_1_DESCRIPTION);
+		addTestTasksToTheDB(ProjectPlannerAppE2E.TASK_FIXTURE_2_DESCRIPTION);
 	}
 
 	@Given("A project has been removed from the database")
@@ -56,6 +57,19 @@ public class DatabaseSteps {
 		JSONObject JsonResponse = new JSONObject(response.getBody());
 		String id = JsonResponse.get("id").toString();
 		return Long.parseLong(id);
+	}
+	
+	private void addTestTasksToTheDB(String description) throws JSONException {
+		JSONObject body = new JSONObject();
+		body.put("description", description);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+		
+		Long id = ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID;
+		ResponseEntity<String> response = new RestTemplate()
+				.postForEntity(ProjectPlannerAppE2E.baseURL + "/api/projects/"+id+"/newtask", entity, String.class);
 	}
 
 }

@@ -24,20 +24,25 @@ import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.services.ProjectService;
+import it.unifi.projectplanner.services.TaskService;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ProjectWebController.class)
 class ProjectWebControllerHtmlTest {
+
+	private static final String HOME_PAGE_URL = "/";
 
 	@Autowired
 	private WebClient webClient;
 
 	@MockBean
 	private ProjectService projectService;
+	@MockBean
+	private TaskService taskService;
 	
 	@Test
 	void test_HomePage_Title() throws Exception {
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 		assertThat(page.getTitleText()).isEqualTo("Projects");
 	}
 	
@@ -45,7 +50,7 @@ class ProjectWebControllerHtmlTest {
 	void test_HomePage_WithNoProjects() throws Exception {
 		when(projectService.getAllProjects()).thenReturn(emptyList());
 
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 
 		assertThat(page.getBody().getTextContent()).contains("No projects");
 	}
@@ -55,21 +60,21 @@ class ProjectWebControllerHtmlTest {
 		when(projectService.getAllProjects())
 				.thenReturn(asList(new Project(1L, "first", emptyList()), new Project(2L, "second", emptyList())));
 
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 		assertThat(page.getBody().getTextContent()).doesNotContain("No projects");
 
 		HtmlTable table = page.getHtmlElementById("projects_table");
 		assertThat(table.asText()).isEqualTo(
 				"My projects\n" +
 				"ID	Name	Completion percentage\n" + 
-				"1	first	0%	Delete\n" + 
-				"2	second	0%	Delete"
+				"1	first	0%	View tasks	Delete\n" + 
+				"2	second	0%	View tasks	Delete"
 		);
 	}
 	
 	@Test
 	void test_HomePage_NewProject_WithNameShouldInsert() throws Exception {
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 		
 		final HtmlForm form = page.getFormByName("new_project_form");
 		form.getInputByName("name").setValueAttribute("new");
@@ -84,7 +89,7 @@ class ProjectWebControllerHtmlTest {
 		Project project = new Project(existingProjectName, emptyList());
 		when(projectService.insertNewProject(project)).thenThrow(new ConflictingProjectNameException(existingProjectName));
 				
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 		final HtmlForm form = page.getFormByName("new_project_form");
 		form.getInputByName("name").setValueAttribute(existingProjectName);
 		form.getButtonByName("new_project_submit").click();
@@ -94,7 +99,7 @@ class ProjectWebControllerHtmlTest {
 	
 	@Test
 	void test_HomePage_NewProject_WithNoNameShouldNotInsert() throws Exception {
-		HtmlPage page = this.webClient.getPage("/");
+		HtmlPage page = this.webClient.getPage(HOME_PAGE_URL);
 		
 		final HtmlForm form = page.getFormByName("new_project_form");
 		form.getInputByName("name").setValueAttribute("");
@@ -115,4 +120,5 @@ class ProjectWebControllerHtmlTest {
 		this.webClient.getPage("/delete/1");
 		verify(projectService, times(1)).deleteProjectById(1L);
 	}
+	
 }
