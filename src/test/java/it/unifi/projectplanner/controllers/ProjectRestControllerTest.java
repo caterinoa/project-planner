@@ -102,9 +102,7 @@ class ProjectRestControllerTest {
 				.andExpect(jsonPath("completionPercentage", is(0)))
 				.andExpect(jsonPath("tasks[0].id", is(1)))
 				.andExpect(jsonPath("tasks[0].description", is("new task")))
-				.andExpect(jsonPath("tasks[0].completed", is(false)))
-				.andExpect(jsonPath("tasks[0].project.id", is(1)))
-				.andExpect(jsonPath("tasks[0].project.name", is("project")));
+				.andExpect(jsonPath("tasks[0].completed", is(false)));
 	}
 	
 	@Test

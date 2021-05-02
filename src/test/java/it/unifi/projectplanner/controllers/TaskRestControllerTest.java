@@ -54,13 +54,9 @@ class TaskRestControllerTest {
 				.andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].description", is("first")))
 				.andExpect(jsonPath("$[0].completed", is(false)))
-				.andExpect(jsonPath("$[0].project.id", is(1)))
-				.andExpect(jsonPath("$[0].project.name", is("project")))
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].description", is("second")))
-				.andExpect(jsonPath("$[1].completed", is(false)))
-				.andExpect(jsonPath("$[0].project.id", is(1)))
-				.andExpect(jsonPath("$[0].project.name", is("project")));				
+				.andExpect(jsonPath("$[1].completed", is(false)));				
 	}
 
 }
