@@ -2,9 +2,7 @@ package it.unifi.projectplanner;
 
 import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -24,17 +21,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import it.unifi.projectplanner.dto.ProjectDTO;
-import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
-import it.unifi.projectplanner.services.TaskService;
+import it.unifi.projectplanner.services.ProjectService;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class ProjectRestControllerIT {
+class TaskRestControllerIT {
 
 	@Container
 	public static final MySQLContainer<?> MY_SQL_CONTAINER = new MySQLContainer<>("mysql:8.0.23")
@@ -44,8 +38,8 @@ class ProjectRestControllerIT {
 	@Autowired
 	private ProjectRepository projectRepository;
 	@Autowired
-	private TaskService taskService;
-
+	private ProjectService projectService;
+	
 	@LocalServerPort
 	private int port;
 
@@ -71,45 +65,17 @@ class ProjectRestControllerIT {
 	}
 
 	@Test
-	void test_AllProjects() throws Exception {
-		Project first = projectRepository.save(new Project("first", emptyList()));
-		Project second = projectRepository.save(new Project("second", emptyList()));
-		List<Project> savedProjects = asList(first, second);
-
-		List<Project> retrievedProjects = asList(given().when().get("/api/projects").as(Project[].class));
-
-		assertThat(retrievedProjects).containsAll(savedProjects);
-	}
-
-	@Test
-	void test_NewProject() throws Exception {
-		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(new ProjectDTO("new project")).when().post("/api/projects/new");
-
-		Project saved = response.getBody().as(Project.class);
-		Project retrieved = projectRepository.findById(saved.getId()).get();
-		assertThat(saved).isEqualTo(retrieved);
-	}
-	
-	@Test
-	void test_NewProjectTask() throws Exception {
-		Project savedProject = projectRepository.save(new Project("saved", new ArrayList<>()));
+	void test_AllProjectTasks() throws Exception {
+		Project savedProject = projectRepository.save(new Project("project", new ArrayList<>()));
 		Long projectId = savedProject.getId();
-		Response response = 
-		given().contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new TaskDTO("new task")).when().post("/api/projects/"+projectId+"/newtask");
+		Task firstTask = new Task("first", savedProject);
+		Task secondTask = new Task("second", savedProject);
+		savedProject = projectService.insertNewTaskIntoProject(firstTask, savedProject);
+		projectService.insertNewTaskIntoProject(secondTask, savedProject);
 
-		Task task = response.getBody().as(Project.class).getTasks().iterator().next();
-		assertThat(taskService.getAllProjectTasks(projectId)).contains(task);
-	}
-	
-	@Test
-	void test_DeleteProject() throws Exception {
-		Project saved = projectRepository.save(new Project("saved", emptyList()));
-		Long id = saved.getId();
-		given().contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(id).when().delete("/api/projects/" + id.toString());
+		List<Task> retrievedTasks = asList(given().when().get("/api/projects/" + projectId).as(Task[].class));
 
-		assertFalse(projectRepository.findById(id).isPresent());
+		assertThat(retrievedTasks).containsAll(asList(firstTask, secondTask));
 	}
+
 }

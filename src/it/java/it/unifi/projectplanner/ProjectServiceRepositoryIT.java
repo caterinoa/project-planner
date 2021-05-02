@@ -99,7 +99,7 @@ class ProjectServiceRepositoryIT {
 	void test_ServiceCanInsertNewTaskIntoProjectIntoRepository() {
 		Project savedProject = projectRepository.save(new Project(SAVED, new ArrayList<>()));
 		Task newTask = new Task("new task", savedProject);
-		Project updatedProject = projectService.insertNewTaskIntoProject(newTask);
+		Project updatedProject = projectService.insertNewTaskIntoProject(newTask, savedProject);
 		
 		assertTrue(updatedProject.getTasks().contains(newTask));
 	}
