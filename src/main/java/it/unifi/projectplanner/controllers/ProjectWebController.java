@@ -22,9 +22,9 @@ public class ProjectWebController {
 
 	private static final String INDEX = "index";
 	private static final String REDIRECT = "redirect:/";
-	private static final String PROJECTS = "projects";
-	private static final String ERROR = "error";
-	private static final String MESSAGE = "message";
+	private static final String PROJECTS_ATTRIBUTE = "projects";
+	private static final String ERROR_ATTRIBUTE = "error";
+	private static final String MESSAGE_ATTRIBUTE = "message";
 
 	@Autowired
 	private ProjectService projectService;
@@ -32,8 +32,8 @@ public class ProjectWebController {
 	@GetMapping(value = "/")
 	public String index(Model model) {
 		List<Project> allProjects = projectService.getAllProjects();
-		model.addAttribute(PROJECTS, allProjects);
-		model.addAttribute(MESSAGE, allProjects.isEmpty() ? "No projects" : "");
+		model.addAttribute(PROJECTS_ATTRIBUTE, allProjects);
+		model.addAttribute(MESSAGE_ATTRIBUTE, allProjects.isEmpty() ? "No projects" : "");
 		return INDEX;
 	}
 
@@ -42,15 +42,15 @@ public class ProjectWebController {
 		String name = projectDTO.getName();
 		String page = INDEX;
 		if (name == null) {
-			model.addAttribute(ERROR, "The project name should not be empty");
-			model.addAttribute(PROJECTS, projectService.getAllProjects());
+			model.addAttribute(ERROR_ATTRIBUTE, "The project name should not be empty");
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 		} else {
 			try {
 				projectService.insertNewProject(new Project(name, new ArrayList<>()));
 				page = REDIRECT;
 			} catch (ConflictingProjectNameException e) {
-				model.addAttribute(ERROR, e.getMessage());
-				model.addAttribute(PROJECTS, projectService.getAllProjects());
+				model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+				model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 			}
 		}
 		return page;
@@ -63,8 +63,8 @@ public class ProjectWebController {
 			projectService.deleteProjectById(id);
 			page = REDIRECT;
 		} catch (NonExistingProjectException e) {
-			model.addAttribute(ERROR, e.getMessage());
-			model.addAttribute(PROJECTS, projectService.getAllProjects());
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 		}
 		return page;
 	}
