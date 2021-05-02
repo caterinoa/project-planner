@@ -34,7 +34,7 @@ public class ProjectService {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public Project insertNewTaskIntoProject(Task task) {
+	public Project insertNewTaskIntoProject(Task task, Project project) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 	
