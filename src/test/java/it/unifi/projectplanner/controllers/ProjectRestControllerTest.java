@@ -68,34 +68,6 @@ class ProjectRestControllerTest {
 	}
 
 	@Test
-	void test_AllProjectTasks_Empty() throws Exception {
-		this.mvc.perform(get("/api/projects/1").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().json("[]"));
-	}
-	
-	@Test
-	void test_AllProjectTasks_NotEmpty() throws Exception {
-		Project project = new Project(1L, "project", emptyList());
-		when(taskService.getAllProjectTasks(1L)).thenReturn(
-				asList(new Task(1L, "first", project), new Task(2L, "second", project)));
-		
-		this.mvc.perform(get("/api/projects/1").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"))
-				.andExpect(jsonPath("$[0].id", is(1)))
-				.andExpect(jsonPath("$[0].description", is("first")))
-				.andExpect(jsonPath("$[0].completed", is(false)))
-				.andExpect(jsonPath("$[0].project.id", is(1)))
-				.andExpect(jsonPath("$[0].project.name", is("project")))
-				.andExpect(jsonPath("$[1].id", is(2)))
-				.andExpect(jsonPath("$[1].description", is("second")))
-				.andExpect(jsonPath("$[1].completed", is(false)))
-				.andExpect(jsonPath("$[0].project.id", is(1)))
-				.andExpect(jsonPath("$[0].project.name", is("project")));				
-	}
-
-	@Test
 	void test_NewProject() throws Exception {
 		Project requestBodyProject = new Project("new", emptyList());
 		when(projectService.insertNewProject(requestBodyProject))

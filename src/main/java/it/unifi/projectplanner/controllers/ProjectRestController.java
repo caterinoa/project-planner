@@ -21,7 +21,6 @@ import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
-import it.unifi.projectplanner.services.TaskService;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -29,17 +28,10 @@ public class ProjectRestController {
 
 	@Autowired
 	private ProjectService projectService;
-	@Autowired
-	private TaskService taskService;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<Project> allProjects() {
 		return projectService.getAllProjects();
-	}
-	
-	@GetMapping(value = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<Task> allProjectTasks(@PathVariable Long projectId) throws NonExistingProjectException {
-		return taskService.getAllProjectTasks(projectId);
 	}
 	
 	@PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
