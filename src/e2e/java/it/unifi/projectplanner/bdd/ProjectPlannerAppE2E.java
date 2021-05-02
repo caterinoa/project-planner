@@ -19,6 +19,9 @@ public class ProjectPlannerAppE2E {
 	public static final String PROJECT_FIXTURE_1_NAME = "first project";
 	public static final String PROJECT_FIXTURE_2_NAME = "second project";
 	public static final String NEW_PROJECT_FIXTURE_NAME = "new project";
+	public static final String TASK_FIXTURE_1_DESCRIPTION = "first task";
+	public static final String TASK_FIXTURE_2_DESCRIPTION = "second task";
+	public static final String NEW_TASK_FIXTURE_NAME = "new task";
 	public static Long PROJECT_FIXTURE_1_ID;
 	public static Long PROJECT_FIXTURE_2_ID;
 
