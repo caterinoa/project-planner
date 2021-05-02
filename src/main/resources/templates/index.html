@@ -18,7 +18,7 @@
 		</form>
 	</div>
 	
-	<div th:unless="${error == null || error.empty}">
+	<div id="error" th:unless="${error == null || error.empty}">
 		<p th:text="${error}"></p>
 	</div>
 	
