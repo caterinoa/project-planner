@@ -79,8 +79,8 @@ class TaskWebControllerHtmlTest {
 		assertThat(table.asText()).isEqualTo(
 				"Project tasks\n" +
 				"ID	Description	Completed\n" + 
-				"1	first	No	View tasks	Delete\n" + 
-				"2	second	No	View tasks	Delete"
+				"1	first	No	Edit task	Delete\n" + 
+				"2	second	No	Edit task	Delete"
 		);
 	}
 	
