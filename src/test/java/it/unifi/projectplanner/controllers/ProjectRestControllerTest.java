@@ -90,7 +90,7 @@ class ProjectRestControllerTest {
 		Task requestBodyTask = new Task("new task", savedProject);
 		when(projectService.getProjectById(1L)).thenReturn(savedProject);
 		Project updatedProject = new Project(1L, "project", asList(new Task(1L, "new task", savedProject)));
-		when(projectService.insertNewTaskIntoProject(requestBodyTask)).thenReturn(updatedProject);
+		when(projectService.insertNewTaskIntoProject(requestBodyTask, savedProject)).thenReturn(updatedProject);
 		
 		JSONObject body = new JSONObject();
 		body.put("description", "new task");
