@@ -62,9 +62,8 @@ public class ProjectService {
 	}
 	
 	@Transactional
-	public Project insertNewTaskIntoProject(Task task) {
+	public Project insertNewTaskIntoProject(Task task, Project project) {
 		Task savedTask = taskRepository.save(task);
-		Project project = savedTask.getProject();
 		project.addTask(savedTask);
 		return projectRepository.save(project);
 	}
