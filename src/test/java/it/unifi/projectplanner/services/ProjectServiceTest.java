@@ -107,21 +107,22 @@ class ProjectServiceTest {
 
 	@Test
 	void test_InsertNewTaskIntoProject() {
-		Project projectToUpdate = spy(new Project(1L, SAVED_PROJECT_NAME, new ArrayList<>()));
-		Task taskToAdd = spy(new Task(1L, "to add", projectToUpdate));
-		projectToUpdate.addTask(taskToAdd);
+		Project toUpdate = spy(new Project(1L, SAVED_PROJECT_NAME, new ArrayList<>()));
+		Task savedToAdd = spy(new Task(1L, "to add", toUpdate));
+		toUpdate.addTask(savedToAdd);
 		
-		when(taskRepository.save(any(Task.class))).thenReturn(taskToAdd);
-		when(projectRepository.save(any(Project.class))).thenReturn(projectToUpdate);
+		when(taskRepository.save(any(Task.class))).thenReturn(savedToAdd);
+		when(projectRepository.save(any(Project.class))).thenReturn(toUpdate);
 		
-		Task toAdd = new Task("to add", projectToUpdate);
-		Project updated = projectService.insertNewTaskIntoProject(toAdd, projectToUpdate);
+		Task toAdd = new Task("to add", toUpdate);
+		Project updated = projectService.insertNewTaskIntoProject(toAdd);
 		
-		assertThat(updated).isSameAs(projectToUpdate);
-		InOrder inOrder = inOrder(projectToUpdate, taskToAdd, projectRepository, taskRepository);
+		assertThat(updated).isSameAs(toUpdate);
+		InOrder inOrder = inOrder(toUpdate, savedToAdd, projectRepository, taskRepository);
 		inOrder.verify(taskRepository, times(1)).save(toAdd);
-		inOrder.verify(projectToUpdate, times(1)).addTask(taskToAdd);
-		inOrder.verify(projectRepository, times(1)).save(projectToUpdate);
+		inOrder.verify(savedToAdd, times(1)).getProject();
+		inOrder.verify(toUpdate, times(1)).addTask(savedToAdd);
+		inOrder.verify(projectRepository, times(1)).save(toUpdate);
 	}
 	
 	@Test
