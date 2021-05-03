@@ -35,4 +35,14 @@ public class TaskService {
 		}
 		return this.taskRepository.findByProject(project.get());
 	}
+	
+	@Transactional
+	public void deleteTaskById(Long id) throws NonExistingTaskException {
+		Optional<Task> retrievedTask = this.taskRepository.findById(id);
+		if (retrievedTask.isPresent()) {
+			this.taskRepository.deleteById(id);
+		} else {
+			throw new NonExistingTaskException(id);
+		}
+	}
 }

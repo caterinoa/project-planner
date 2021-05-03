@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -29,7 +31,7 @@ class TaskServiceTest {
 	private TaskRepository taskRepository;
 	@Mock
 	private ProjectRepository projectRepository;
-
+	
 	@InjectMocks
 	private TaskService taskService;
 
@@ -69,6 +71,20 @@ class TaskServiceTest {
 		assertThrows(NonExistingProjectException.class, () -> {
 			taskService.getAllProjectTasks(id);
 		});
+	}
+
+	@Test
+	void test_DeletePTaskById_ExistingTask() throws NonExistingTaskException {
+		when(taskRepository.findById(anyLong())).thenReturn(Optional.of(SAVED_TASK));
+		taskService.deleteTaskById(TASK_ID);
+		verify(taskRepository, times(1)).deleteById(TASK_ID);
+	}
+
+	@Test
+	void test_DeleteProjectById_NotExistingProject() throws NonExistingTaskException {
+		when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
+		assertThrows(NonExistingTaskException.class, () -> taskService.deleteTaskById(TASK_ID));
+		verify(taskRepository, times(0)).deleteById(TASK_ID);
 	}
 
 }
