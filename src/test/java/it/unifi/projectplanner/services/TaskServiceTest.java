@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -76,20 +79,27 @@ class TaskServiceTest {
 
 	@Test
 	void test_DeletePTaskById_ExistingTask() throws NonExistingTaskException {
-		Project project = new Project(1L, "project", new ArrayList<>());
-		Task taskToDelete = new Task(TASK_ID, "task", project);
-		project.addTask(taskToDelete);
+		Project savedProject = spy(new Project(1L, "project", new ArrayList<>()));
+		Task taskToDelete = new Task(TASK_ID, "task", savedProject);
+		savedProject.addTask(taskToDelete);
 		when(taskRepository.findById(anyLong())).thenReturn(Optional.of(taskToDelete));
-		taskService.deleteProjectTaskById(TASK_ID, project);
+
+		taskService.deleteProjectTaskById(TASK_ID, savedProject);
+		
+		InOrder inOrder = inOrder(savedProject, projectRepository, taskRepository);
+		inOrder.verify(taskRepository, times(1)).findById(TASK_ID);
+		inOrder.verify(savedProject, times(1)).removeTask(taskToDelete);
+		inOrder.verify(projectRepository, times(1)).save(savedProject);
 		verify(taskRepository, times(1)).deleteById(TASK_ID);
 	}
 
 	@Test
 	void test_DeleteProjectById_NotExistingProject() throws NonExistingTaskException {
-		Project project = new Project(1L, "project", new ArrayList<>());
-		Task taskToDelete = new Task(TASK_ID, "task", project);
-		project.addTask(taskToDelete);
+		Project savedProject = new Project(1L, "project", new ArrayList<>());
+		Task taskToDelete = new Task(TASK_ID, "task", savedProject);
+		savedProject.addTask(taskToDelete);
 		when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
+		
 		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(TASK_ID, null));
 		verify(taskRepository, times(0)).deleteById(TASK_ID);
 	}

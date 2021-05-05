@@ -41,7 +41,7 @@ public class TaskService {
 		Optional<Task> retrievedTask = this.taskRepository.findById(taskId);
 		if (retrievedTask.isPresent()) {
 			project.removeTask(retrievedTask.get());
-			this.projectRepository .save(project);
+			this.projectRepository.save(project);
 			this.taskRepository.deleteById(taskId);
 		} else {
 			throw new NonExistingTaskException(taskId);
