@@ -128,24 +128,30 @@ class TaskWebControllerTest {
 	
 	@Test
 	void test_DeleteTask_ByExistingTaskIdShouldDelete() throws Exception {
+		Long taskId = 1L;
+		Task taskToDelete = new Task(taskId, "task to delete");
+		Project project = new Project(1L, "project", asList(taskToDelete));
+		when(projectService.getProjectById(1L)).thenReturn(project);
 		mvc.perform(get("/projectTasks/1/deletetask/1"))
 				.andExpect(view().name(REDIRECT_PROJECT_TASKS + "/1"));
 		
-		verify(taskService, times(1)).deleteTaskById(1L);
+		verify(taskService, times(1)).deleteProjectTaskById(taskId, project);
 	}
 	
 	@Test
 	void test_DeleteTask_ByNonExistingTaskIdShouldNotDelete() throws Exception {
+		Project project = new Project(1L, "project", emptyList());
+		when(projectService.getProjectById(1L)).thenReturn(project);
+		
 		Long taskId = 1L;
-		when(projectService.getProjectById(1L)).thenReturn(new Project(1L, "project", emptyList()));
-		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteTaskById(taskId);
+		doThrow(new NonExistingTaskException(1L)).when(taskService).deleteProjectTaskById(taskId, project);
 		
 		mvc.perform(get("/projectTasks/1/deletetask/1"))
 				.andExpect(view().name(PROJECT_TASKS))
 				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The task with id=" + taskId + " does not exist"))
 				.andExpect(model().attribute(PROJECT_TASKS_ATTRIBUTE, emptyList()));
 		
-		verify(taskService, times(1)).deleteTaskById(1L);
+		verify(taskService, times(1)).deleteProjectTaskById(1L, project);
 	}
 
 	@Test

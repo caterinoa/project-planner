@@ -134,17 +134,22 @@ class TaskWebControllerHtmlTest {
 	
 	@Test
 	void test_ProjectTasksPage_DeleteTask_ByExistingTaskIdShouldDelete() throws Exception {
+		Project project = new Project(1L, "project", emptyList());
+		when(projectService.getProjectById(1L)).thenReturn(project);
+		
 		this.webClient.getPage("/projectTasks/1/deletetask/1");
-		verify(taskService, times(1)).deleteTaskById(1L);
+		verify(taskService, times(1)).deleteProjectTaskById(1L, project);
 	}
 
 	@Test
 	void test_ProjectTasksPage_DeleteTask_ByNonExistingTaskIdShouldNotDelete() throws Exception {
 		Long taskId = 1L;
+		Project project = new Project(1L, "project", emptyList());
 		when(projectService.getProjectById(1L)).thenReturn(new Project(1L, "project", emptyList()));
-		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteTaskById(taskId);
+		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteProjectTaskById(taskId, project);
+		
 		this.webClient.getPage("/projectTasks/1/deletetask/1");
-		verify(taskService, times(1)).deleteTaskById(1L);
+		verify(taskService, times(1)).deleteProjectTaskById(1L, project);
 	}
 	
 	@Test
