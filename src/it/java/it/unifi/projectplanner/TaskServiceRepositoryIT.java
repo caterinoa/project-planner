@@ -2,6 +2,7 @@ package it.unifi.projectplanner;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
@@ -35,9 +36,11 @@ class TaskServiceRepositoryIT {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	private static final String SAVED = "saved";
+	
 	@Test
 	void test_ServiceCanGetTaskByIdFromRepository() throws NonExistingTaskException {
-		Task task = taskRepository.save(new Task("saved"));
+		Task task = taskRepository.save(new Task(SAVED));
 		Task retrievedTask = taskService.getTaskById(task.getId());
 		
 		assertThat(retrievedTask).isEqualTo(task);
@@ -66,6 +69,22 @@ class TaskServiceRepositoryIT {
 	@Test
 	void test_ServiceDoesNotGetTasksOfNonExistingProjectByIdFromRepository() throws NonExistingProjectException {
 		assertThrows(NonExistingProjectException.class, () -> taskService.getAllProjectTasks(1L));
+	}
+	
+	@Test
+	void test_ServiceCanDeleteTaskFromRepository() throws NonExistingTaskException, NonExistingProjectException {
+		Project savedProject = projectRepository.save(new Project("saved project", new ArrayList<>()));
+		Task savedTask = taskRepository.save(new Task(SAVED, savedProject));
+		Long taskId = savedTask.getId();
+		taskService.deleteTaskById(taskId);
+		
+		assertFalse(taskService.getAllProjectTasks(savedProject.getId()).contains(savedTask));
+		assertFalse(taskRepository.findById(taskId).isPresent());
+	}
+	
+	@Test
+	void test_ServiceDoesNotDeleteNonExistingTaskFromRepository() throws NonExistingTaskException {
+		assertThrows(NonExistingTaskException.class, () -> taskService.deleteTaskById(1L));
 	}
 
 }
