@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -164,6 +165,17 @@ class ProjectRestControllerTest {
 		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
         		.andExpect(status().isOk())
         		.andExpect(jsonPath("$").doesNotExist());
+		verify(projectService, times(1)).deleteProjectById(1L);
+    }
+	
+	@Test
+	void test_DeleteTaskById_WithNonExistingProjectIdShouldThrow() throws Exception {
+		doThrow(new NonExistingProjectException(1L)).when(projectService).deleteProjectById(1L);
+		
+		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof NonExistingProjectException))
+				.andExpect(result -> assertEquals("The project with id=1 does not exist", result.getResolvedException().getMessage()));
 		verify(projectService, times(1)).deleteProjectById(1L);
     }
 	
