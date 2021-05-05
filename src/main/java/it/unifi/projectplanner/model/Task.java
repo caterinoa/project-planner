@@ -41,6 +41,13 @@ public class Task {
 		this.completed = false;
 	}
 	
+	public Task(Long id, String description) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.completed = false;
+	}
+	
 	public Task(String description) {
 		super();
 		this.description = description;
