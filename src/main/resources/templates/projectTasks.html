@@ -45,8 +45,8 @@
 					<td th:text="${task.description}"></td>
 					<td th:if="${task.completed}==false">No</td>
 					<td th:if="${task.completed}==true">Yes</td>
-					<td><a th:id="'edit_task' + ${task.id}" th:href="@{'/edit_tasks/' + ${task.id}}">Edit task</a></td>
-					<td><a th:id="'delete_task' + ${task.id}" th:href="@{'/delete_task/' + ${task.id}}">Delete</a></td>
+					<td><a th:id="'edit_task' + ${task.id}" th:href="@{'/editTask/' + ${task.id}}">Edit task</a></td>
+					<td><a th:id="'delete_task' + ${task.id}" th:href="@{'/projectTasks/' + ${project_id} + '/deletetask/' + ${task.id}}">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>

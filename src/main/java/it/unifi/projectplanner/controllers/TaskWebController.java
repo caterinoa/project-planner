@@ -78,7 +78,7 @@ public class TaskWebController {
 	}
 	
 	@GetMapping("/projectTasks/{projectId}/deletetask/{taskId}")
-	public String deleteTask(@PathVariable Long projectId, @PathVariable Long taskId, Model model) {
+	public String deleteTaskFromProject(@PathVariable Long projectId, @PathVariable Long taskId, Model model) {
 		String page = REDIRECT_PROJECT_TASKS + "/" + projectId;
 		Project project;
 		try {
@@ -89,7 +89,7 @@ public class TaskWebController {
 			return INDEX;
 		}
 		try {
-			taskService.deleteTaskById(taskId);
+			taskService.deleteProjectTaskById(taskId, project);
 		} catch (NonExistingTaskException e) {
 			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
