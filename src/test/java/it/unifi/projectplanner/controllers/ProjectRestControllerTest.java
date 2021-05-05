@@ -4,6 +4,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +28,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import it.unifi.projectplanner.exceptions.ConflictingProjectNameException;
+import it.unifi.projectplanner.exceptions.EmptyMandatoryInputException;
+import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
@@ -42,7 +48,7 @@ class ProjectRestControllerTest {
 	private ProjectService projectService;
 	@MockBean
 	private TaskService taskService;
-
+	
 	@Test
 	void test_AllProjects_Empty() throws Exception {
 		this.mvc.perform(get("/api/projects").accept(MediaType.APPLICATION_JSON))
@@ -68,7 +74,7 @@ class ProjectRestControllerTest {
 	}
 
 	@Test
-	void test_NewProject() throws Exception {
+	void test_NewProject_WithNameShouldInsert() throws Exception {
 		Project requestBodyProject = new Project("new", emptyList());
 		when(projectService.insertNewProject(requestBodyProject))
 				.thenReturn(new Project(1L, "new", new ArrayList<>()));
@@ -85,7 +91,32 @@ class ProjectRestControllerTest {
 	}
 	
 	@Test
-	void test_NewProjectTask() throws Exception {
+	void test_NewProject_WithEmptyNameShouldThrow() throws Exception {
+		JSONObject body = new JSONObject();
+		body.put("name", "");
+		this.mvc.perform(post("/api/projects/new").content(body.toJSONString()).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof EmptyMandatoryInputException))
+				.andExpect(result -> assertEquals("Invalid input: mandatory field 'name' was empty.", result.getResolvedException().getMessage()));
+	}
+	
+	@Test
+	void test_NewProject_WithConflictingNameShouldThrow() throws Exception {
+		Project requestBodyProject = new Project("new", emptyList());
+		when(projectService.insertNewProject(requestBodyProject)).thenThrow(new ConflictingProjectNameException("new"));
+		
+		JSONObject body = new JSONObject();
+		body.put("name", "new");
+		this.mvc.perform(post("/api/projects/new").content(body.toJSONString()).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof ConflictingProjectNameException))
+				.andExpect(result -> assertEquals("The name 'new' is already used for another project", result.getResolvedException().getMessage()));
+	}
+	
+	@Test
+	void test_NewProjectTask_WithDescriptionShouldInsert() throws Exception {
 		Project savedProject = new Project(1L, "project", emptyList());
 		Task requestBodyTask = new Task("new task", savedProject);
 		when(projectService.getProjectById(1L)).thenReturn(savedProject);
@@ -106,10 +137,45 @@ class ProjectRestControllerTest {
 	}
 	
 	@Test
+	void test_NewProjectTask_WithEmptyDescriptionShouldThrow() throws Exception {
+		JSONObject body = new JSONObject();
+		body.put("description", "");
+		this.mvc.perform(post("/api/projects/1/newtask").content(body.toJSONString()).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof EmptyMandatoryInputException))
+				.andExpect(result -> assertEquals("Invalid input: mandatory field 'description' was empty.", result.getResolvedException().getMessage()));
+	}
+	
+	@Test
+	void test_NewProjectTask_OfNonExistingProjectShouldThrow() throws Exception {
+		when(projectService.getProjectById(1L)).thenThrow(new NonExistingProjectException(1L));
+		
+		JSONObject body = new JSONObject();
+		body.put("description", "new task");
+		this.mvc.perform(post("/api/projects/1/newtask").content(body.toJSONString()).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof NonExistingProjectException))
+				.andExpect(result -> assertEquals("The project with id=1 does not exist", result.getResolvedException().getMessage()));
+	}
+	
+	@Test
 	void test_DeleteProjectById() throws Exception {
 		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
         		.andExpect(status().isOk())
         		.andExpect(jsonPath("$").doesNotExist());
+		verify(projectService, times(1)).deleteProjectById(1L);
+    }
+	
+	@Test
+	void test_DeleteTaskById_WithNonExistingProjectIdShouldThrow() throws Exception {
+		doThrow(new NonExistingProjectException(1L)).when(projectService).deleteProjectById(1L);
+		
+		this.mvc.perform(delete("/api/projects/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError())
+				.andExpect(result -> assertTrue(result.getResolvedException() instanceof NonExistingProjectException))
+				.andExpect(result -> assertEquals("The project with id=1 does not exist", result.getResolvedException().getMessage()));
 		verify(projectService, times(1)).deleteProjectById(1L);
     }
 	
