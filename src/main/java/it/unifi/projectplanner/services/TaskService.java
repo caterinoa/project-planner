@@ -37,12 +37,14 @@ public class TaskService {
 	}
 	
 	@Transactional
-	public void deleteTaskById(Long id) throws NonExistingTaskException {
-		Optional<Task> retrievedTask = this.taskRepository.findById(id);
+	public void deleteProjectTaskById(Long taskId, Project project) throws NonExistingTaskException {
+		Optional<Task> retrievedTask = this.taskRepository.findById(taskId);
 		if (retrievedTask.isPresent()) {
-			this.taskRepository.deleteById(id);
+			project.removeTask(retrievedTask.get());
+			this.projectRepository .save(project);
+			this.taskRepository.deleteById(taskId);
 		} else {
-			throw new NonExistingTaskException(id);
+			throw new NonExistingTaskException(taskId);
 		}
 	}
 }
