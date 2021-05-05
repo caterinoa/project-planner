@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.exceptions.NonExistingTaskException;
+import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 
 @Service
@@ -17,7 +18,7 @@ public class TaskService {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 	
-	public void deleteTaskById(Long id) throws NonExistingTaskException {
+	public void deleteProjectTaskById(Long taskId, Project project) throws NonExistingTaskException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 }
