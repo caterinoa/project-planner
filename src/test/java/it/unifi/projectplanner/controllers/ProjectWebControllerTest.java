@@ -37,6 +37,7 @@ class ProjectWebControllerTest {
 	private static final String REDIRECT = "redirect:/";
 	private static final String ERROR_ATTRIBUTE = "error";
 	private static final String MESSAGE_ATTRIBUTE = "message";
+	private static final String PROJECTS_ATTRIBUTE = "projects";
 
 	@Autowired
 	private MockMvc mvc;
@@ -95,8 +96,9 @@ class ProjectWebControllerTest {
 		when(projectService.insertNewProject(project))
 				.thenThrow(new ConflictingProjectNameException(existingProjectName));
 
-		mvc.perform(post("/save").param("name", existingProjectName)).andExpect(view().name(INDEX)).andExpect(
-				model().attribute(ERROR_ATTRIBUTE, "The name '" + existingProjectName + "' is already used for another project"));
+		mvc.perform(post("/save").param("name", existingProjectName))
+				.andExpect(view().name(INDEX))
+				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The name '" + existingProjectName + "' is already used for another project"));
 
 		verify(projectService, times(1)).insertNewProject(project);
 	}
@@ -105,7 +107,8 @@ class ProjectWebControllerTest {
 	void test_NewProject_WithNoNameShouldNotInsert() throws Exception {
 		Project project = new Project("", emptyList());
 
-		mvc.perform(post("/save").param("name", "")).andExpect(view().name(INDEX))
+		mvc.perform(post("/save").param("name", ""))
+				.andExpect(view().name(INDEX))
 				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The project name should not be empty"));
 
 		verify(projectService, times(0)).insertNewProject(project);
@@ -122,8 +125,10 @@ class ProjectWebControllerTest {
 		Long id = 1L;
 		doThrow(new NonExistingProjectException(id)).when(projectService).deleteProjectById(id);
 
-		mvc.perform(get("/delete/1")).andExpect(view().name(INDEX))
-				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The project with id=" + id + " does not exist"));
+		mvc.perform(get("/delete/1"))
+				.andExpect(view().name(INDEX))
+				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The project with id=" + id + " does not exist"))
+				.andExpect(model().attribute(PROJECTS_ATTRIBUTE, emptyList()));
 
 		verify(projectService, times(1)).deleteProjectById(id);
 	}

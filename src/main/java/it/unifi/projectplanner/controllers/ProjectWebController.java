@@ -57,7 +57,7 @@ public class ProjectWebController {
 	}
 
 	@GetMapping("/delete/{id}")
-	public String deleteProject(@PathVariable long id, Model model) {
+	public String deleteProject(@PathVariable Long id, Model model) {
 		String page = INDEX;
 		try {
 			projectService.deleteProjectById(id);
