@@ -135,7 +135,7 @@ class TaskWebControllerTest {
 		mvc.perform(get("/projectTasks/1/deletetask/1"))
 				.andExpect(view().name(REDIRECT_PROJECT_TASKS + "/1"));
 		
-		verify(taskService, times(1)).deleteProjectTaskById(taskId, project);
+		verify(taskService, times(1)).deleteProjectTaskById(taskId);
 	}
 	
 	@Test
@@ -144,14 +144,14 @@ class TaskWebControllerTest {
 		when(projectService.getProjectById(1L)).thenReturn(project);
 		
 		Long taskId = 1L;
-		doThrow(new NonExistingTaskException(1L)).when(taskService).deleteProjectTaskById(taskId, project);
+		doThrow(new NonExistingTaskException(1L)).when(taskService).deleteProjectTaskById(taskId);
 		
 		mvc.perform(get("/projectTasks/1/deletetask/1"))
 				.andExpect(view().name(PROJECT_TASKS))
 				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The task with id=" + taskId + " does not exist"))
 				.andExpect(model().attribute(PROJECT_TASKS_ATTRIBUTE, emptyList()));
 		
-		verify(taskService, times(1)).deleteProjectTaskById(1L, project);
+		verify(taskService, times(1)).deleteProjectTaskById(1L);
 	}
 
 	@Test
