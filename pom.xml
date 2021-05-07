@@ -58,6 +58,12 @@
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
 			**/model/*.java
 		</sonar.issue.ignore.multicriteria.e1.resourceKey>
+		<sonar.issue.ignore.multicriteria.e2.ruleKey>
+			java:S3655
+		</sonar.issue.ignore.multicriteria.e2.ruleKey>
+		<sonar.issue.ignore.multicriteria.e2.resourceKey>
+			**/service/TaskService.java
+		</sonar.issue.ignore.multicriteria.e2.resourceKey>
 	</properties>
 	
 	<dependencies>

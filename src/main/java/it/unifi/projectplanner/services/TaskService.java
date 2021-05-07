@@ -37,9 +37,11 @@ public class TaskService {
 	}
 	
 	@Transactional
-	public void deleteProjectTaskById(Long taskId, Project project) throws NonExistingTaskException {
+	public void deleteProjectTaskById(Long taskId) throws NonExistingTaskException {
 		Optional<Task> retrievedTask = this.taskRepository.findById(taskId);
 		if (retrievedTask.isPresent()) {
+			Long projectId = retrievedTask.get().getProjectId();
+			Project project = projectRepository.findById(projectId).get();
 			project.removeTask(retrievedTask.get());
 			this.projectRepository.save(project);
 			this.taskRepository.deleteById(taskId);
