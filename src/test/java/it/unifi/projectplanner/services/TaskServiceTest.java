@@ -83,8 +83,9 @@ class TaskServiceTest {
 		Task taskToDelete = new Task(TASK_ID, "task", savedProject);
 		savedProject.addTask(taskToDelete);
 		when(taskRepository.findById(anyLong())).thenReturn(Optional.of(taskToDelete));
-
-		taskService.deleteProjectTaskById(TASK_ID, savedProject);
+		when(projectRepository.findById(anyLong())).thenReturn(Optional.of(savedProject));
+		
+		taskService.deleteProjectTaskById(TASK_ID);
 		
 		InOrder inOrder = inOrder(savedProject, projectRepository, taskRepository);
 		inOrder.verify(taskRepository, times(1)).findById(TASK_ID);
@@ -100,7 +101,7 @@ class TaskServiceTest {
 		savedProject.addTask(taskToDelete);
 		when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 		
-		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(TASK_ID, null));
+		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(TASK_ID));
 		verify(taskRepository, times(0)).deleteById(TASK_ID);
 	}
 
