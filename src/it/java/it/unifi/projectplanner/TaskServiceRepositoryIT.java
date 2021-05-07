@@ -76,7 +76,7 @@ class TaskServiceRepositoryIT {
 		Project savedProject = projectRepository.save(new Project("saved project", new ArrayList<>()));
 		Task savedTask = taskRepository.save(new Task(SAVED, savedProject));
 		Long taskId = savedTask.getId();
-		taskService.deleteProjectTaskById(taskId, savedProject);
+		taskService.deleteProjectTaskById(taskId);
 		
 		assertFalse(taskService.getAllProjectTasks(savedProject.getId()).contains(savedTask));
 		assertFalse(taskRepository.findById(taskId).isPresent());
@@ -84,7 +84,7 @@ class TaskServiceRepositoryIT {
 	
 	@Test
 	void test_ServiceDoesNotDeleteNonExistingTaskFromRepository() throws NonExistingTaskException {
-		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(1L, null));
+		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(1L));
 	}
 
 }
