@@ -23,14 +23,14 @@ public class TaskRestController {
 	@Autowired
 	private TaskService taskService;
 	
-	@GetMapping(value = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/project/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<Task> allProjectTasks(@PathVariable Long projectId) throws NonExistingProjectException {
 		return taskService.getAllProjectTasks(projectId);
 	}
 	
 	@DeleteMapping(value = "/{taskId}")
 	public void deleteProjectTask(@PathVariable Long taskId) throws NonExistingTaskException {
-		taskService.deleteTaskById(taskId);
+		taskService.deleteProjectTaskById(taskId);
 	}
 
 }
