@@ -78,7 +78,7 @@ class TaskRestControllerIT {
 		savedProject = projectService.insertNewTaskIntoProject(firstTask, savedProject);
 		projectService.insertNewTaskIntoProject(secondTask, savedProject);
 
-		List<Task> retrievedTasks = asList(given().when().get("/api/tasks/project" + projectId).as(Task[].class));
+		List<Task> retrievedTasks = asList(given().when().get("/api/projects/" + projectId).as(Task[].class));
 
 		assertThat(retrievedTasks).containsAll(asList(firstTask, secondTask));
 	}
