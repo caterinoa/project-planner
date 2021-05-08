@@ -23,10 +23,12 @@ public class TaskWebController {
 
 	private static final String INDEX = "index";
 	private static final String PROJECT_TASKS = "projectTasks";
+	private static final String EDIT_TASK = "editTask";
 	private static final String REDIRECT_PROJECT_TASKS = "redirect:/projectTasks";
 	private static final String PROJECTS_ATTRIBUTE = "projects";
 	private static final String PROJECT_ID_ATTRIBUTE = "project_id";
 	private static final String PROJECT_TASKS_ATTRIBUTE = "tasks";
+	private static final String TASK_ID_ATTRIBUTE = "task_id";
 	private static final String ERROR_ATTRIBUTE = "error";
 	private static final String MESSAGE_ATTRIBUTE = "message";
 
@@ -92,9 +94,35 @@ public class TaskWebController {
 			taskService.deleteProjectTaskById(taskId);
 		} catch (NonExistingTaskException e) {
 			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
-			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
 			page = PROJECT_TASKS;
+		}
+		return page;
+	}
+	
+	@GetMapping("/editTask/{taskId}")
+	public String editTask(@PathVariable("taskId") Long taskId, Model model) {
+		model.addAttribute(TASK_ID_ATTRIBUTE, taskId);
+		return EDIT_TASK;
+	}
+	
+	@PostMapping("/editTask/{taskId}")
+	public String updateTask(@PathVariable("taskId") Long taskId, 
+			@ModelAttribute("description") String description, @ModelAttribute("completed") String completed, Model model) {
+		Task task;
+		try {
+			task = taskService.getTaskById(taskId);
+		} catch (NonExistingTaskException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
+			return INDEX;
+		}
+		String page = REDIRECT_PROJECT_TASKS + "/" + task.projectId();
+		if (description.equals("")) {
+			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
+			page = EDIT_TASK;
+		} else {
+			taskService.updateTask(task, description, completed.equals("1"));
 		}
 		return page;
 	}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Edit task</title>
+</head>
+
+<body>
+
+	<h1>Project planner</h1>
+	
+	<h3 id="page_subtitle" th:text="'Edit task ' + ${task_id}"></h3>
+	
+	<div>
+		<form name="edit_task_form" th:action="@{'/editTask/' + ${task_id}}" method="POST">
+			<p>
+				Description: <input type="text" name="description" />
+			</p>
+			<p>
+				Completed: <input type="checkbox" value="1" name="completed" />
+			</p>
+			<p>
+				<button type="submit" name="edit_task_submit" id="edit_task_submit">Edit Task</button>
+			</p>
+		</form>
+	</div>
+	
+	<div th:unless="${error == null || error.empty}">
+		<p th:text="${error}"></p>
+	</div>
+	
+	
+	<div>
+		<a id="home_page_link" href="/">Back to home page</a>
+	</div>
+
+</body>
+</html>

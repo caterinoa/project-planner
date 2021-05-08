@@ -65,6 +65,10 @@ public class Task {
 	public boolean isCompleted() {
 		return completed;
 	}
+	
+	public Long projectId() {
+		return project.getId();
+	}
 
 	@Override
 	public String toString() {
