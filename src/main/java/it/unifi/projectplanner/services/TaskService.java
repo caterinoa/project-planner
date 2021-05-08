@@ -20,4 +20,8 @@ public class TaskService {
 	public void deleteTaskById(Long id) throws NonExistingTaskException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION); 	
 	}
+	
+	public Task updateTask(Task task, String description, boolean completed) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
 }
