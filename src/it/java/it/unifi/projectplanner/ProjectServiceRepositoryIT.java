@@ -22,6 +22,7 @@ import it.unifi.projectplanner.exceptions.NonExistingProjectException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
+import it.unifi.projectplanner.repositories.TaskRepository;
 import it.unifi.projectplanner.services.ProjectService;
 
 @ExtendWith(SpringExtension.class)
@@ -31,9 +32,10 @@ class ProjectServiceRepositoryIT {
 
 	@Autowired
 	private ProjectService projectService;
-
 	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
+	private TaskRepository taskRepository;
 
 	private static final String SAVED = "saved";
 
@@ -83,10 +85,14 @@ class ProjectServiceRepositoryIT {
 	
 	@Test
 	void test_ServiceCanDeleteProjectFromRepository() throws NonExistingProjectException {
-		Project saved = projectRepository.save(new Project(SAVED, emptyList()));
-		Long id = saved.getId();
-		projectService.deleteProjectById(id);
-		assertFalse(projectRepository.findById(id).isPresent());
+		Project saved = projectRepository.save(new Project(SAVED, new ArrayList<>()));
+		saved = projectService.insertNewTaskIntoProject(new Task("task", saved), saved);
+		Long projectId = saved.getId();
+		Long taskId = saved.getTasks().iterator().next().getId();
+		
+		projectService.deleteProjectById(projectId);
+		assertFalse(projectRepository.findById(projectId).isPresent());
+		assertFalse(taskRepository.findById(taskId).isPresent());
 	}
 	
 	@Test

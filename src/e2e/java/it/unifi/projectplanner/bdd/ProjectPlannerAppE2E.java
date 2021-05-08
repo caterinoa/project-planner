@@ -24,6 +24,8 @@ public class ProjectPlannerAppE2E {
 	public static final String NEW_TASK_FIXTURE_NAME = "new task";
 	public static Long PROJECT_FIXTURE_1_ID;
 	public static Long PROJECT_FIXTURE_2_ID;
+	public static Long TASK_FIXTURE_1_ID;
+	public static Long TASK_FIXTURE_2_ID;
 
 	@Before
 	public void setupScenario() {
@@ -32,5 +34,4 @@ public class ProjectPlannerAppE2E {
 		baseURL = "http://localhost:" + ProjectPlannerAppE2E.port;
 		new RestTemplate().delete(baseURL + "/api/projects/deleteall");
 	}
-
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
+import it.unifi.projectplanner.exceptions.NonExistingTaskException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
@@ -56,7 +57,7 @@ public class TaskWebController {
 	public String saveTaskIntoProject(@PathVariable("projectId") Long projectId,
 			@ModelAttribute("description") TaskDTO taskDTO, Model model) {
 		String description = taskDTO.getDescription();
-		String page = PROJECT_TASKS;
+		String page = REDIRECT_PROJECT_TASKS + "/" + projectId;
 		Project project;
 		try {
 			project = projectService.getProjectById(projectId);
@@ -69,10 +70,33 @@ public class TaskWebController {
 			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
 			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
+			page = PROJECT_TASKS;
 		} else {
 			projectService.insertNewTaskIntoProject(new Task(description, project), project);
-			page = REDIRECT_PROJECT_TASKS + "/" + projectId.toString();
 		}
 		return page;
 	}
+	
+	@GetMapping("/projectTasks/{projectId}/deletetask/{taskId}")
+	public String deleteTaskFromProject(@PathVariable Long projectId, @PathVariable Long taskId, Model model) {
+		String page = REDIRECT_PROJECT_TASKS + "/" + projectId;
+		Project project;
+		try {
+			project = projectService.getProjectById(projectId);
+		} catch (NonExistingProjectException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
+			return INDEX;
+		}
+		try {
+			taskService.deleteProjectTaskById(taskId);
+		} catch (NonExistingTaskException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
+			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
+			page = PROJECT_TASKS;
+		}
+		return page;
+	}
+
 }

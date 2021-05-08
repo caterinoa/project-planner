@@ -13,11 +13,13 @@ Feature: Task View
 		Given The user provides task description in the text field
 		When The user clicks on the "New Task" button
 		Then The list contains the new task
-		
+	
+	@under_test
 	Scenario: Delete a task
 		When The user clicks on the "Delete Task" button
 		Then The task is removed from the list
-		
+	
+	@under_test	
 	Scenario: Delete a not existing task
 		Given A task has been removed from the database
 		When The user clicks on the "Delete Task" button
@@ -26,6 +28,7 @@ Feature: Task View
 	Scenario: Edit a task
 		When The user clicks on the "Edit Task" button
 		Then The Edit Task View is shown
+		And The id of the task is shown
 		
 	Scenario: Edit a not existing task
 		Given A task has been removed from the database

@@ -41,6 +41,13 @@ public class Task {
 		this.completed = false;
 	}
 	
+	public Task(Long id, String description) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.completed = false;
+	}
+	
 	public Task(String description) {
 		super();
 		this.description = description;
@@ -57,6 +64,10 @@ public class Task {
 
 	public boolean isCompleted() {
 		return completed;
+	}
+	
+	public Long projectId() {
+		return project.getId();
 	}
 
 	@Override

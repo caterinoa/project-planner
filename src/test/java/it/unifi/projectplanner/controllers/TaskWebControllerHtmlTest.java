@@ -3,9 +3,11 @@ package it.unifi.projectplanner.controllers;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +25,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
 import it.unifi.projectplanner.exceptions.NonExistingProjectException;
+import it.unifi.projectplanner.exceptions.NonExistingTaskException;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.services.ProjectService;
@@ -127,5 +130,33 @@ class TaskWebControllerHtmlTest {
 		inOrder.verify(projectService, times(1)).getProjectById(1L);
 		inOrder.verify(projectService, times(1)).getAllProjects();
 		verifyNoMoreInteractions(projectService);
+	}
+	
+	@Test
+	void test_ProjectTasksPage_DeleteTask_ByExistingTaskIdShouldDelete() throws Exception {
+		Project project = new Project(1L, "project", emptyList());
+		when(projectService.getProjectById(1L)).thenReturn(project);
+		
+		this.webClient.getPage("/projectTasks/1/deletetask/1");
+		verify(taskService, times(1)).deleteProjectTaskById(1L);
+	}
+
+	@Test
+	void test_ProjectTasksPage_DeleteTask_ByNonExistingTaskIdShouldNotDelete() throws Exception {
+		Long taskId = 1L;
+//		Project project = new Project(1L, "project", emptyList());
+		when(projectService.getProjectById(1L)).thenReturn(new Project(1L, "project", emptyList()));
+		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteProjectTaskById(taskId);
+		
+		this.webClient.getPage("/projectTasks/1/deletetask/1");
+		verify(taskService, times(1)).deleteProjectTaskById(1L);
+	}
+	
+	@Test
+	void test_ProjectTasksPage_DeleteTask_OfNonExistingProjectShouldNotDelete() throws Exception {
+		Long projectId = 1L;
+		doThrow(new NonExistingProjectException(projectId)).when(projectService).getProjectById(projectId);
+		this.webClient.getPage("/projectTasks/1/deletetask/1");
+		verifyNoInteractions(taskService);
 	}
 }

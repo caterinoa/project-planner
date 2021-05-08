@@ -3,6 +3,7 @@ package it.unifi.projectplanner;
 import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -24,6 +26,7 @@ import io.restassured.RestAssured;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
+import it.unifi.projectplanner.repositories.TaskRepository;
 import it.unifi.projectplanner.services.ProjectService;
 
 @Testcontainers
@@ -37,6 +40,8 @@ class TaskRestControllerIT {
 
 	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
+	private TaskRepository taskRepository;
 	@Autowired
 	private ProjectService projectService;
 	
@@ -73,9 +78,20 @@ class TaskRestControllerIT {
 		savedProject = projectService.insertNewTaskIntoProject(firstTask, savedProject);
 		projectService.insertNewTaskIntoProject(secondTask, savedProject);
 
-		List<Task> retrievedTasks = asList(given().when().get("/api/projects/" + projectId).as(Task[].class));
+		List<Task> retrievedTasks = asList(given().when().get("/api/tasks/project/" + projectId).as(Task[].class));
 
 		assertThat(retrievedTasks).containsAll(asList(firstTask, secondTask));
 	}
+	
+	@Test
+	void test_DeleteProjectTask() throws Exception {
+		Project savedProject = projectRepository.save(new Project("saved", new ArrayList<>()));
+		Task savedTask = taskRepository.save(new Task("saved task", savedProject));
+		Long taskId = savedTask.getId();
+		given().contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(taskId).when().delete("/api/tasks/" + taskId);
 
+		assertFalse(savedProject.getTasks().contains(savedTask));
+		assertFalse(taskRepository.findById(taskId).isPresent());
+	}
 }
