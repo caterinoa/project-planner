@@ -51,7 +51,7 @@
    			**/exceptions/*,
    			**/repositories/* <!-- Only for testing service branch -->
  		</sonar.coverage.exclusions>
- 		<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+ 		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
  		<sonar.issue.ignore.multicriteria.e1.ruleKey>
  			java:S3776
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
