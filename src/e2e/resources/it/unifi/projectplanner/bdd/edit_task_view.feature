@@ -10,3 +10,4 @@ Feature: Edit Task View
 		Given The user provides task data in the fields
 		When The user clicks on the "Submit" button
 		Then The Task View is shown
+		And The updated task is shown in the list

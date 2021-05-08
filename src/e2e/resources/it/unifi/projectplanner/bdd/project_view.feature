@@ -28,6 +28,7 @@ Feature: Project View
 	Scenario: View tasks of a project
 		When The user clicks on the "View Tasks" button
 		Then The Task View is shown
+		And The id of the project is shown
 	
 	@under_test
 	Scenario: View tasks of a not existing project

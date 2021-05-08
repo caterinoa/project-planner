@@ -28,6 +28,7 @@ Feature: Task View
 	Scenario: Edit a task
 		When The user clicks on the "Edit Task" button
 		Then The Edit Task View is shown
+		And The id of the task is shown
 		
 	Scenario: Edit a not existing task
 		Given A task has been removed from the database
