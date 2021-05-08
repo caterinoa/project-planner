@@ -70,6 +70,14 @@ public class Task {
 		return project.getId();
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";
