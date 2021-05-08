@@ -65,7 +65,7 @@
 			java:S3655
 		</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>
-			**/services/TaskService.java
+			**/TaskService.java
 		</sonar.issue.ignore.multicriteria.e2.resourceKey>
 	</properties>
 	
