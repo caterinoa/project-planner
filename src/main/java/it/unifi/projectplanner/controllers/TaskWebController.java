@@ -92,6 +92,7 @@ public class TaskWebController {
 			taskService.deleteProjectTaskById(taskId);
 		} catch (NonExistingTaskException e) {
 			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
 			page = PROJECT_TASKS;
 		}
