@@ -43,13 +43,13 @@ public class TaskViewSteps {
 
 	@Then("The task is removed from the list")
 	public void the_task_is_removed_from_the_list() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("tasks_table")).getText())
+			.doesNotContain(ProjectPlannerAppE2E.TASK_FIXTURE_1_ID.toString());
 	}
 
 	@Then("An error is shown containing the id of the selected task")
 	public void an_error_is_shown_containing_the_name_of_the_selected_task() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("error")).getText())
+			.isEqualTo("The task with id=" + ProjectPlannerAppE2E.TASK_FIXTURE_1_ID + " does not exist");
 	}
 }

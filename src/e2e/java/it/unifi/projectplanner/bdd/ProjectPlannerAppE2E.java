@@ -34,5 +34,4 @@ public class ProjectPlannerAppE2E {
 		baseURL = "http://localhost:" + ProjectPlannerAppE2E.port;
 		new RestTemplate().delete(baseURL + "/api/projects/deleteall");
 	}
-
 }
