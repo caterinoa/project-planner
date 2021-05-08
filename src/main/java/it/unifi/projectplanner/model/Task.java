@@ -66,7 +66,7 @@ public class Task {
 		return completed;
 	}
 	
-	public Long getProjectId() {
+	public Long projectId() {
 		return project.getId();
 	}
 
