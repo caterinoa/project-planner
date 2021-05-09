@@ -144,7 +144,7 @@ class TaskWebControllerHtmlTest {
 
 	@Test
 	void test_ProjectTasksPage_DeleteTask_ByNonExistingTaskIdShouldNotDelete() throws Exception {
-		Long taskId = 1L;
+		Long taskId = 1L;		
 		when(projectService.getProjectById(1L)).thenReturn(new Project(1L, "project", emptyList()));
 		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteProjectTaskById(taskId);
 		
@@ -162,6 +162,7 @@ class TaskWebControllerHtmlTest {
 	
 	@Test
 	void test_EditTaskPage_Title() throws Exception {
+		when(taskService.getTaskById(1L)).thenReturn(new Task(1L, "task"));
 		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
 		assertThat(page.getTitleText()).isEqualTo("Edit task");
 	}
@@ -198,7 +199,7 @@ class TaskWebControllerHtmlTest {
 	
 	@Test
 	void test_EditTaskPage_UpdateTask_WithNotExistingIdShouldNotUpdate() throws Exception {
-		doThrow(new NonExistingTaskException(1L)).when(taskService).getTaskById(1L);
+		when(taskService.getTaskById(1L)).thenReturn(new Task(1L, "task")).thenThrow(new NonExistingTaskException(1L));
 		
 		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
 		
@@ -208,7 +209,7 @@ class TaskWebControllerHtmlTest {
 		form.getButtonByName("edit_task_submit").click();
 		
 		InOrder inOrder = inOrder(taskService, projectService);
-		inOrder.verify(taskService, times(1)).getTaskById(1L);
+		inOrder.verify(taskService, times(2)).getTaskById(1L);
 		inOrder.verify(projectService, times(1)).getAllProjects();
 		inOrder.verifyNoMoreInteractions();
 	}

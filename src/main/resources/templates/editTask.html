@@ -14,7 +14,7 @@
 	<div>
 		<form name="edit_task_form" th:action="@{'/editTask/' + ${task_id}}" method="POST">
 			<p>
-				Description: <input type="text" name="description" />
+				Description: <input type="text" name="description" th:value="${task_description}"/>
 			</p>
 			<p>
 				Completed: <input type="checkbox" value="1" name="completed" />
