@@ -1,6 +1,7 @@
 package it.unifi.projectplanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ class TaskWebControllerIT {
 	private WebDriver webDriver;
 
 	private String projectTasksURL;
+	private String editTaskURL;
 
 	private static final String SAVED_PROJECT = "saved project";
 	private static final String SAVED_TASK = "first task";
@@ -52,6 +54,7 @@ class TaskWebControllerIT {
 	@BeforeEach
 	public void setup() {
 		projectTasksURL = "http://localhost:" + port + "/projectTasks";
+		editTaskURL = "http://localhost:" + port + "/editTask";
 		webDriver = new HtmlUnitDriver();
 		projectRepository.deleteAll();
 		projectRepository.flush();
@@ -97,7 +100,7 @@ class TaskWebControllerIT {
 	}
 	
 	@Test
-	void test_HomePage_DeleteTask_WithExistingTaskIdShouldDelete() {
+	void test_ProjectTasksPage_DeleteTask_WithExistingTaskIdShouldDelete() {
 		Project savedProject = projectRepository.save(new Project(SAVED_PROJECT, new ArrayList<>()));
 		savedProject = projectService.insertNewTaskIntoProject(new Task(SAVED_TASK, savedProject), savedProject);
 		Long projectId = savedProject.getId();
@@ -109,9 +112,33 @@ class TaskWebControllerIT {
 	}
 	
 	@Test
-	void test_HomePage_DeleteProject_WithNonExistingProjectIdShouldShowErrorMessage() {
+	void test_ProjectTasksPage_DeleteTask_WithNonExistingTaskIdShouldShowErrorMessage() {
 		Project savedProject = projectRepository.save(new Project(SAVED_PROJECT, new ArrayList<>()));
 		webDriver.get(projectTasksURL + "/" + savedProject.getId() + "/deletetask/1");
+		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The task with id=1 does not exist");
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask() {
+		Project savedProject = projectRepository.save(new Project(SAVED_PROJECT, new ArrayList<>()));
+		savedProject = projectService.insertNewTaskIntoProject(new Task(SAVED_TASK, savedProject), savedProject);
+		Task savedTask = savedProject.getTasks().iterator().next();
+		
+		webDriver.get(editTaskURL + "/" + savedTask.getId());
+		
+		webDriver.findElement(By.name("description")).clear();
+		webDriver.findElement(By.name("description")).sendKeys("updated");
+		webDriver.findElement(By.name("completed")).click();
+		webDriver.findElement(By.name("edit_task_submit")).click();
+		
+		Task retrievedTask = taskRepository.findById(savedTask.getId()).get();
+		assertThat(retrievedTask.getDescription()).isEqualTo("updated");
+		assertTrue(retrievedTask.isCompleted());
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithNonExistingTaskIdShouldShowErrorMessage() {
+		webDriver.get(editTaskURL + "/1");		
 		assertThat(webDriver.findElement(By.id("error")).getText()).isEqualTo("The task with id=1 does not exist");
 	}
 }
