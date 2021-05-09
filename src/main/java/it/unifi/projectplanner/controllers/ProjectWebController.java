@@ -41,7 +41,7 @@ public class ProjectWebController {
 	public String saveProject(@ModelAttribute("name") ProjectDTO projectDTO, Model model) {
 		String name = projectDTO.getName();
 		String page = INDEX;
-		if (name == null) {
+		if (name.isEmpty()) {
 			model.addAttribute(ERROR_ATTRIBUTE, "The project name should not be empty");
 			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 		} else {

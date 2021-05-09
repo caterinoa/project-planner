@@ -36,6 +36,7 @@ import it.unifi.projectplanner.services.TaskService;
 class TaskWebControllerHtmlTest {
  
 	private static final String PROJECT_TASKS_URL = "/projectTasks";
+	private static final String EDIT_TASK = "/editTask";
 
 	@Autowired
 	private WebClient webClient;
@@ -158,5 +159,58 @@ class TaskWebControllerHtmlTest {
 		doThrow(new NonExistingProjectException(projectId)).when(projectService).getProjectById(projectId);
 		this.webClient.getPage("/projectTasks/1/deletetask/1");
 		verifyNoInteractions(taskService);
+	}
+	
+	@Test
+	void test_EditTaskPage_Title() throws Exception {
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		assertThat(page.getTitleText()).isEqualTo("Edit task");
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithDescriptionShouldUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(1)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithEmptyDescriptionShouldNotUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(0)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithNotExistingIdShouldNotUpdate() throws Exception {
+		doThrow(new NonExistingTaskException(1L)).when(taskService).getTaskById(1L);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		InOrder inOrder = inOrder(taskService, projectService);
+		inOrder.verify(taskService, times(1)).getTaskById(1L);
+		inOrder.verify(projectService, times(1)).getAllProjects();
+		inOrder.verifyNoMoreInteractions();
 	}
 }
