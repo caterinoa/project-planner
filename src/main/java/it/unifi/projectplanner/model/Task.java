@@ -59,6 +59,10 @@ public class Task {
 		return completed;
 	}
 
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", description=" + description + ", completed=" + completed + "]";
@@ -97,5 +101,4 @@ public class Task {
 			return false;
 		return true;
 	}
-
 }
