@@ -101,10 +101,10 @@ public class TaskWebController {
 	
 	@GetMapping("/editTask/{taskId}")
 	public String editTask(@PathVariable("taskId") Long taskId, Model model) {
-		model.addAttribute(TASK_ID_ATTRIBUTE, taskId);
 		Task task;
 		try {
 			task = taskService.getTaskById(taskId);
+			model.addAttribute(TASK_ID_ATTRIBUTE, taskId);
 			model.addAttribute(TASK_DESCRIPTION_ATTRIBUTE, task.getDescription());
 		} catch (NonExistingTaskException e) {
 			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
