@@ -15,8 +15,8 @@ public class TaskViewSteps {
 		ProjectPlannerAppE2E.webDriver.get(url);
 	}
 
-	@Given("The id of the project is shown")
-	public void the_id_of_the_project_is_shown() {
+	@Given("The Task View is shown containing the id of the project")
+	public void the_task_view_is_shown_containing_the_id_of_the_project() {
 		String shouldBePresent = "Project " + ProjectPlannerAppE2E.PROJECT_FIXTURE_1_ID + " tasks";
 		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("page_subtitle")).getText())
 			.contains(shouldBePresent);
@@ -32,13 +32,13 @@ public class TaskViewSteps {
 
 	@Given("The user provides task description in the text field")
 	public void the_user_provides_task_description_in_the_text_field() {
-		ProjectPlannerAppE2E.webDriver.findElement(By.name("description")).sendKeys(ProjectPlannerAppE2E.NEW_TASK_FIXTURE_NAME);
+		ProjectPlannerAppE2E.webDriver.findElement(By.name("description")).sendKeys(ProjectPlannerAppE2E.NEW_TASK_FIXTURE_DESCRIPTION);
 	}
 
 	@Then("The list contains the new task")
 	public void the_list_contains_the_new_task() {
 		assertThat(ProjectPlannerAppE2E.webDriver.findElement(By.id("tasks_table")).getText())
-			.contains(ProjectPlannerAppE2E.NEW_TASK_FIXTURE_NAME);
+			.contains(ProjectPlannerAppE2E.NEW_TASK_FIXTURE_DESCRIPTION);
 	}
 
 	@Then("The task is removed from the list")
