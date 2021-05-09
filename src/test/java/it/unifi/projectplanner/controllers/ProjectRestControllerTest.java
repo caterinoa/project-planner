@@ -66,11 +66,9 @@ class ProjectRestControllerTest {
 				.andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].name", is("first")))
 				.andExpect(jsonPath("$[0].tasks", is(empty())))
-				.andExpect(jsonPath("$[0].completionPercentage", is(0)))
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].name", is("second")))
-				.andExpect(jsonPath("$[1].tasks", is(empty())))
-				.andExpect(jsonPath("$[1].completionPercentage", is(0)));
+				.andExpect(jsonPath("$[1].tasks", is(empty())));
 	}
 
 	@Test
@@ -86,7 +84,6 @@ class ProjectRestControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("id", is(1)))
 				.andExpect(jsonPath("name", is("new")))
-				.andExpect(jsonPath("completionPercentage", is(0)))
 				.andExpect(jsonPath("tasks", is(empty())));
 	}
 	
@@ -130,7 +127,6 @@ class ProjectRestControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("id", is(1)))
 				.andExpect(jsonPath("name", is("project")))
-				.andExpect(jsonPath("completionPercentage", is(0)))
 				.andExpect(jsonPath("tasks[0].id", is(1)))
 				.andExpect(jsonPath("tasks[0].description", is("new task")))
 				.andExpect(jsonPath("tasks[0].completed", is(false)));

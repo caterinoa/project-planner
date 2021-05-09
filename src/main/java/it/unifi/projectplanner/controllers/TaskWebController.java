@@ -28,6 +28,7 @@ public class TaskWebController {
 	private static final String PROJECT_ID_ATTRIBUTE = "project_id";
 	private static final String PROJECT_TASKS_ATTRIBUTE = "tasks";
 	private static final String TASK_ID_ATTRIBUTE = "task_id";
+	private static final String TASK_DESCRIPTION_ATTRIBUTE = "task_description";
 	private static final String ERROR_ATTRIBUTE = "error";
 	private static final String MESSAGE_ATTRIBUTE = "message";
 
@@ -102,6 +103,15 @@ public class TaskWebController {
 	@GetMapping("/editTask/{taskId}")
 	public String editTask(@PathVariable("taskId") Long taskId, Model model) {
 		model.addAttribute(TASK_ID_ATTRIBUTE, taskId);
+		Task task;
+		try {
+			task = taskService.getTaskById(taskId);
+			model.addAttribute(TASK_DESCRIPTION_ATTRIBUTE, task.getDescription());
+		} catch (NonExistingTaskException e) {
+			model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
+			return INDEX;
+		}
 		return EDIT_TASK;
 	}
 	
@@ -117,7 +127,7 @@ public class TaskWebController {
 		}
 		String page = REDIRECT_PROJECT_TASKS + "/" + task.projectId();
 		String description = taskDTO.getDescription();
-		String completed = taskDTO.getCompleted();
+		String completed = (taskDTO.getCompleted() != null) ? taskDTO.getCompleted() : "0";
 		if (description.isEmpty()) {
 			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
 			page = EDIT_TASK;
