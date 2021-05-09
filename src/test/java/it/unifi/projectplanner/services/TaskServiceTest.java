@@ -1,6 +1,7 @@
 package it.unifi.projectplanner.services;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,10 +41,8 @@ class TaskServiceTest {
 	private TaskService taskService;
 
 	private static final Long TASK_ID = 1L;
-	private static final String SAVED_TASK_DESCRIPTION = "saved task";
-	private static final String SAVED_TASK_DESCRIPTION_2 = "second task";
-	private static final Task SAVED_TASK = new Task(TASK_ID, SAVED_TASK_DESCRIPTION);
-	private static final Task SAVED_TASK_2 = new Task(TASK_ID + 1, SAVED_TASK_DESCRIPTION_2);
+	private static final Task SAVED_TASK = new Task(TASK_ID, "saved task");
+	private static final Task SAVED_TASK_2 = new Task(TASK_ID + 1, "second task");
 
 	@Test
 	void test_GetTaskById_Found() throws NonExistingTaskException {
@@ -105,4 +104,24 @@ class TaskServiceTest {
 		verify(taskRepository, times(0)).deleteById(TASK_ID);
 	}
 
+	@Test
+	void test_UpdateTask() {
+		Project savedProject = new Project(1L, "project", emptyList());
+		Task savedTask = spy(new Task(TASK_ID, "task", savedProject));
+		
+		String updatedDescription = "updated task";
+		Task updatedTask = new Task(TASK_ID, updatedDescription, savedProject);
+		updatedTask.setCompleted(true);
+		
+		when(taskRepository.save(any(Task.class))).thenReturn(updatedTask);
+		
+		Task result = taskService.updateTask(savedTask, updatedDescription, true);
+		
+		assertThat(result).isSameAs(updatedTask);
+		
+		InOrder inOrder = inOrder(savedTask, taskRepository);
+		inOrder.verify(savedTask, times(1)).setDescription(updatedDescription);
+		inOrder.verify(savedTask, times(1)).setCompleted(true);
+		inOrder.verify(taskRepository, times(1)).save(savedTask);
+	}
 }

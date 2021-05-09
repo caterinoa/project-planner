@@ -49,4 +49,11 @@ public class TaskService {
 			throw new NonExistingTaskException(taskId);
 		}
 	}
+	
+	@Transactional
+	public Task updateTask(Task task, String description, boolean completed) {
+		task.setDescription(description);
+		task.setCompleted(completed);
+		return taskRepository.save(task);
+	}
 }

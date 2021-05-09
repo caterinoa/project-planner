@@ -67,5 +67,4 @@ public class ProjectService {
 		project.addTask(savedTask);
 		return projectRepository.save(project);
 	}
-
 }

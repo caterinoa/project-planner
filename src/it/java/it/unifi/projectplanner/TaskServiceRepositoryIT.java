@@ -2,6 +2,8 @@ package it.unifi.projectplanner;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -85,6 +87,17 @@ class TaskServiceRepositoryIT {
 	@Test
 	void test_ServiceDoesNotDeleteNonExistingTaskFromRepository() throws NonExistingTaskException {
 		assertThrows(NonExistingTaskException.class, () -> taskService.deleteProjectTaskById(1L));
+	}
+
+	@Test
+	void test_ServiceCanUpdateTaskIntoRepository() {
+		Project savedProject = projectRepository.save(new Project("saved project", new ArrayList<>()));
+		Task savedTask = taskRepository.save(new Task(SAVED, savedProject));
+		
+		Task updatedTask = taskService.updateTask(savedTask, "updated task", true);
+		
+		assertEquals("updated task", updatedTask.getDescription());
+		assertTrue(updatedTask.isCompleted());
 	}
 
 }

@@ -58,7 +58,7 @@ class ProjectWebControllerIT {
 		Project project = projectRepository.save(new Project(SAVED_PROJECT, emptyList()));
 		webDriver.get(baseURL);
 		Long id = project.getId();
-		assertThat(webDriver.findElement(By.id("projects_table")).getText()).contains(id.toString(), SAVED_PROJECT, "0%");
+		assertThat(webDriver.findElement(By.id("projects_table")).getText()).contains(id.toString(), SAVED_PROJECT);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class ProjectWebControllerIT {
 		
 		Optional<Project> retrievedProject = projectRepository.findByName(NEW_PROJECT);
 		assertTrue(retrievedProject.isPresent());
-		assertThat(webDriver.findElement(By.id("projects_table")).getText()).contains(retrievedProject.get().getId().toString(), NEW_PROJECT, "0%");
+		assertThat(webDriver.findElement(By.id("projects_table")).getText()).contains(retrievedProject.get().getId().toString(), NEW_PROJECT);
 	}
 	
 	@Test

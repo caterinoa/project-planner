@@ -23,6 +23,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import it.unifi.projectplanner.dto.TaskDTO;
 import it.unifi.projectplanner.model.Project;
 import it.unifi.projectplanner.model.Task;
 import it.unifi.projectplanner.repositories.ProjectRepository;
@@ -93,5 +95,25 @@ class TaskRestControllerIT {
 
 		assertFalse(savedProject.getTasks().contains(savedTask));
 		assertFalse(taskRepository.findById(taskId).isPresent());
+	}
+	
+	@Test
+	void test_UpdateTask() throws Exception {
+		Project savedProject = projectRepository.save(new Project("saved project", new ArrayList<>()));
+		projectService.insertNewTaskIntoProject(new Task("saved task", savedProject), savedProject);
+		Long taskId = savedProject.getTasks().iterator().next().getId();
+		
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setDescription("updated task");
+		taskDTO.setCompleted("1");
+		
+		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(taskDTO).when().post("/api/tasks/" + taskId);
+
+		Task resultTask = response.getBody().as(Task.class);
+		Task retrievedTask = taskRepository.findById(taskId).get();
+		assertThat(retrievedTask.getId()).isEqualTo(resultTask.getId());
+		assertThat(retrievedTask.getDescription()).isEqualTo(resultTask.getDescription());
+		assertThat(retrievedTask.isCompleted()).isEqualTo(resultTask.isCompleted());
 	}
 }

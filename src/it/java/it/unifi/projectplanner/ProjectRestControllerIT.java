@@ -83,8 +83,10 @@ class ProjectRestControllerIT {
 
 	@Test
 	void test_NewProject() throws Exception {
+		ProjectDTO projectDTO = new ProjectDTO();
+		projectDTO.setName("new project");
 		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(new ProjectDTO("new project")).when().post("/api/projects/new");
+				.body(projectDTO).when().post("/api/projects/new");
 
 		Project saved = response.getBody().as(Project.class);
 		Project retrieved = projectRepository.findById(saved.getId()).get();
@@ -95,9 +97,11 @@ class ProjectRestControllerIT {
 	void test_NewProjectTask() throws Exception {
 		Project savedProject = projectRepository.save(new Project("saved", new ArrayList<>()));
 		Long projectId = savedProject.getId();
+		TaskDTO taskDTO = new TaskDTO();
+		taskDTO.setDescription("new task");
 		Response response = 
 		given().contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new TaskDTO("new task")).when().post("/api/projects/"+projectId+"/newtask");
+			.body(taskDTO).when().post("/api/projects/"+projectId+"/newtask");
 
 		Task task = response.getBody().as(Project.class).getTasks().iterator().next();
 		assertThat(taskService.getAllProjectTasks(projectId)).contains(task);

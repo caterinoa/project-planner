@@ -19,6 +19,10 @@ public class ButtonsSteps {
 			buttonName = "new_task_submit";
 		} else if (buttonText.equals("Delete Task")) {
 			buttonName = "delete_task" + ProjectPlannerAppE2E.TASK_FIXTURE_1_ID;
+		} else if (buttonText.equals("Edit Task")) {
+			buttonName = "edit_task" + ProjectPlannerAppE2E.TASK_FIXTURE_1_ID;
+		} else if (buttonText.equals("Submit")) {
+			buttonName = "edit_task_submit";
 		}
 		ProjectPlannerAppE2E.webDriver.findElement(By.id(buttonName)).click();
 	}

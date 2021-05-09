@@ -36,6 +36,7 @@ import it.unifi.projectplanner.services.TaskService;
 class TaskWebControllerHtmlTest {
  
 	private static final String PROJECT_TASKS_URL = "/projectTasks";
+	private static final String EDIT_TASK = "/editTask";
 
 	@Autowired
 	private WebClient webClient;
@@ -143,8 +144,7 @@ class TaskWebControllerHtmlTest {
 
 	@Test
 	void test_ProjectTasksPage_DeleteTask_ByNonExistingTaskIdShouldNotDelete() throws Exception {
-		Long taskId = 1L;
-//		Project project = new Project(1L, "project", emptyList());
+		Long taskId = 1L;		
 		when(projectService.getProjectById(1L)).thenReturn(new Project(1L, "project", emptyList()));
 		doThrow(new NonExistingTaskException(taskId)).when(taskService).deleteProjectTaskById(taskId);
 		
@@ -158,5 +158,81 @@ class TaskWebControllerHtmlTest {
 		doThrow(new NonExistingProjectException(projectId)).when(projectService).getProjectById(projectId);
 		this.webClient.getPage("/projectTasks/1/deletetask/1");
 		verifyNoInteractions(taskService);
+	}
+	
+	@Test
+	void test_EditTaskPage_Title() throws Exception {
+		when(taskService.getTaskById(1L)).thenReturn(new Task(1L, "task"));
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		assertThat(page.getTitleText()).isEqualTo("Edit task");
+	}
+	
+	@Test
+	void test_EditTaskPage_NonExistingTask() throws Exception {
+		when(taskService.getTaskById(1L)).thenThrow(new NonExistingTaskException(1L));
+		this.webClient.getPage(EDIT_TASK + "/1");
+		verify(projectService, times(1)).getAllProjects();
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithDescriptionAndCheckedCompletedShouldUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(1)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithDescriptionAndUncheckedCompletedShouldUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(false);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(1)).updateTask(task, "new description", false);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithEmptyDescriptionShouldNotUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(0)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithNotExistingIdShouldNotUpdate() throws Exception {
+		when(taskService.getTaskById(1L)).thenReturn(new Task(1L, "task")).thenThrow(new NonExistingTaskException(1L));
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(true);
+		form.getButtonByName("edit_task_submit").click();
+		
+		InOrder inOrder = inOrder(taskService, projectService);
+		inOrder.verify(taskService, times(2)).getTaskById(1L);
+		inOrder.verify(projectService, times(1)).getAllProjects();
+		inOrder.verifyNoMoreInteractions();
 	}
 }

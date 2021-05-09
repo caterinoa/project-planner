@@ -5,7 +5,6 @@ Feature: Task View
 	Background:
 		Given The database contains a few tasks for a selected project
 		And The Task View is shown
-		And The id of the project is shown
 		And A list is shown containing the tasks that are stored in the database for the project 
 	
 	@under_test
@@ -24,12 +23,13 @@ Feature: Task View
 		Given A task has been removed from the database
 		When The user clicks on the "Delete Task" button
 		Then An error is shown containing the id of the selected task
-		
+	
+	@under_test	
 	Scenario: Edit a task
 		When The user clicks on the "Edit Task" button
-		Then The Edit Task View is shown
-		And The id of the task is shown
-		
+		Then The Edit Task View is shown containing the id of the task
+	
+	@under_test	
 	Scenario: Edit a not existing task
 		Given A task has been removed from the database
 		When The user clicks on the "Edit Task" button
