@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -56,8 +55,7 @@ public class TaskWebController {
 	}
 	
 	@PostMapping("/projectTasks/{projectId}/savetask")
-	public String saveTaskIntoProject(@PathVariable("projectId") Long projectId,
-			@ModelAttribute("description") TaskDTO taskDTO, Model model) {
+	public String saveTaskIntoProject(@PathVariable("projectId") Long projectId, TaskDTO taskDTO, Model model) {
 		String description = taskDTO.getDescription();
 		String page = REDIRECT_PROJECT_TASKS + "/" + projectId;
 		Project project;
@@ -68,7 +66,7 @@ public class TaskWebController {
 			model.addAttribute(PROJECTS_ATTRIBUTE, projectService.getAllProjects());
 			return INDEX;
 		}
-		if (description == null) {
+		if (description.isEmpty()) {
 			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
 			model.addAttribute(PROJECT_ID_ATTRIBUTE, projectId);
 			model.addAttribute(PROJECT_TASKS_ATTRIBUTE, project.getTasks());
@@ -107,8 +105,7 @@ public class TaskWebController {
 	}
 	
 	@PostMapping("/editTask/{taskId}")
-	public String updateTask(@PathVariable("taskId") Long taskId, 
-			@ModelAttribute("description") String description, @ModelAttribute("completed") String completed, Model model) {
+	public String updateTask(@PathVariable("taskId") Long taskId, TaskDTO taskDTO, Model model) {
 		Task task;
 		try {
 			task = taskService.getTaskById(taskId);
@@ -118,7 +115,9 @@ public class TaskWebController {
 			return INDEX;
 		}
 		String page = REDIRECT_PROJECT_TASKS + "/" + task.projectId();
-		if (description.equals("")) {
+		String description = taskDTO.getDescription();
+		String completed = taskDTO.getCompleted();
+		if (description.isEmpty()) {
 			model.addAttribute(ERROR_ATTRIBUTE, "The task description should not be empty");
 			page = EDIT_TASK;
 		} else {
@@ -126,5 +125,4 @@ public class TaskWebController {
 		}
 		return page;
 	}
-
 }
