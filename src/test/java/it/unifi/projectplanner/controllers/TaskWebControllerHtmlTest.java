@@ -168,7 +168,14 @@ class TaskWebControllerHtmlTest {
 	}
 	
 	@Test
-	void test_EditTaskPage_UpdateTask_WithDescriptionShouldUpdate() throws Exception {
+	void test_EditTaskPage_NonExistingTask() throws Exception {
+		when(taskService.getTaskById(1L)).thenThrow(new NonExistingTaskException(1L));
+		this.webClient.getPage(EDIT_TASK + "/1");
+		verify(projectService, times(1)).getAllProjects();
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithDescriptionAndCheckedCompletedShouldUpdate() throws Exception {
 		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
 		when(taskService.getTaskById(1L)).thenReturn(task);
 		
@@ -180,6 +187,21 @@ class TaskWebControllerHtmlTest {
 		form.getButtonByName("edit_task_submit").click();
 		
 		verify(taskService, times(1)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_EditTaskPage_UpdateTask_WithDescriptionAndUncheckedCompletedShouldUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+		
+		HtmlPage page = this.webClient.getPage(EDIT_TASK + "/1");
+		
+		final HtmlForm form = page.getFormByName("edit_task_form");
+		form.getInputByName("description").setValueAttribute("new description");
+		form.getInputByName("completed").setChecked(false);
+		form.getButtonByName("edit_task_submit").click();
+		
+		verify(taskService, times(1)).updateTask(task, "new description", false);
 	}
 	
 	@Test

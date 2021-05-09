@@ -44,6 +44,8 @@ class TaskWebControllerTest {
 	private static final String MESSAGE_ATTRIBUTE = "message";
 	private static final String PROJECT_TASKS_ATTRIBUTE = "tasks";
 	private static final String PROJECTS_ATTRIBUTE = "projects";
+	private static final String TASK_ID_ATTRIBUTE = "task_id";
+	private static final String TASK_DESCRIPTION_ATTRIBUTE = "task_description";
 
 	@Autowired
 	private MockMvc mvc;
@@ -171,7 +173,28 @@ class TaskWebControllerTest {
 	}
 	
 	@Test
-	void test_UpdateTask_WithDescriptionShouldUpdate() throws Exception {
+	void test_ViewUpdateTaskPage_WithExistingIdTaskId() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+
+		mvc.perform(get("/editTask/1"))
+				.andExpect(view().name(EDIT_TASK))
+				.andExpect(model().attribute(TASK_ID_ATTRIBUTE, 1L))
+				.andExpect(model().attribute(TASK_DESCRIPTION_ATTRIBUTE, "task"));
+	}
+	
+	@Test
+	void test_ViewUpdateTaskPage_WithNotExistingIdTaskId() throws Exception {
+		when(taskService.getTaskById(1L)).thenThrow(new NonExistingTaskException(1L));
+
+		mvc.perform(get("/editTask/1"))
+				.andExpect(view().name(INDEX))
+				.andExpect(model().attribute(ERROR_ATTRIBUTE, "The task with id=1 does not exist"))
+				.andExpect(model().attribute(PROJECTS_ATTRIBUTE, emptyList()));
+	}
+	
+	@Test
+	void test_UpdateTask_WithDescriptionAndCheckedCompletedShouldUpdate() throws Exception {
 		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
 		when(taskService.getTaskById(1L)).thenReturn(task);
 
@@ -181,6 +204,18 @@ class TaskWebControllerTest {
 				.andExpect(view().name(REDIRECT_PROJECT_TASKS + "/1"));
 				
 		verify(taskService, times(1)).updateTask(task, "new description", true);
+	}
+	
+	@Test
+	void test_UpdateTask_WithDescriptionAndUncheckedCompletedShouldUpdate() throws Exception {
+		Task task = new Task(1L, "task", new Project(1L, "project", emptyList()));
+		when(taskService.getTaskById(1L)).thenReturn(task);
+
+		mvc.perform(post("/editTask/1")
+				.param("description", "new description"))
+				.andExpect(view().name(REDIRECT_PROJECT_TASKS + "/1"));
+				
+		verify(taskService, times(1)).updateTask(task, "new description", false);
 	}
 	
 	@Test
