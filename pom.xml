@@ -166,8 +166,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			
+			</plugin>			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -487,6 +486,8 @@
 									<goal>start</goal>
 								</goals>
 								<configuration>
+									<wait>200000</wait>
+									<maxAttempts>10</maxAttempts>
 									<arguments>
 										<argument>--server.port=${tomcat.http.port}</argument>
 									</arguments>
