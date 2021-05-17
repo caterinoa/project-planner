@@ -20,7 +20,7 @@ public class Project {
 	private Long id;
 	@Column(nullable = false, unique = true)
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Collection<Task> tasks;
 
 	public Project() {
