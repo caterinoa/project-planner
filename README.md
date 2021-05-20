@@ -14,5 +14,5 @@ A web app for project planning, implemented for the course "Advanced techniques 
 Command to run the application (that will be available at http://localhost:8080/):
 
 ```
-mvn clean compile docker:start spring-boot:run && mvn docker:stop
+mvn clean docker:start spring-boot:run && mvn docker:stop
 ```

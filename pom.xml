@@ -286,22 +286,13 @@
 					<version>${pitest.version}</version>
 					<configuration>
 						<targetClasses>
-							<param>it.unifi.projectplanner.*</param>
+							<param>it.unifi.projectplanner.controllers.*</param>
+							<param>it.unifi.projectplanner.services.*</param>
 						</targetClasses>
-						<excludedClasses>
-							<param>it.unifi.projectplanner.ProjectPlannerApplication</param>
-							<param>it.unifi.projectplanner.model.*</param>
-							<param>it.unifi.projectplanner.exceptions.*</param>
-							<param>it.unifi.projectplanner.dto.*</param>
-						</excludedClasses>
 						<targetTests>
-							<param>it.unifi.projectplanner.*</param>
+							<param>it.unifi.projectplanner.controllers.*</param>
+							<param>it.unifi.projectplanner.services.*</param>
 						</targetTests>
-						<excludedTestClasses>
-							<param>**/*ApplicationTests.java</param>
-							<param>**/*IT.java</param>
-							<param>**/*E2E.java</param>
-						</excludedTestClasses>
 						<mutators>
 							<mutator>STRONGER</mutator>
 						</mutators>
@@ -317,9 +308,6 @@
 							<image>
 								<alias>projectplanner-database</alias>
 								<name>mysql:8.0.23</name>
-								<build>
-									<dockerFileDir>${project.basedir}</dockerFileDir>
-								</build>
 								<run>
 									<ports>
 										<port>3306:3306</port>
@@ -328,6 +316,12 @@
 										<log>mysqld: ready for connections</log>
 										<time>200000</time>
 									</wait>
+									<env>
+										<MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+										<MYSQL_DATABASE>projectplanner</MYSQL_DATABASE>
+										<MYSQL_USER>mysql</MYSQL_USER>
+										<MYSQL_PASSWORD>mysql</MYSQL_PASSWORD>
+									</env>
 								</run>
 							</image>
 						</images>
@@ -452,17 +446,9 @@
 						<artifactId>docker-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>docker:build</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
 								<id>docker:start</id>
 								<phase>pre-integration-test</phase>
 								<goals>
-									<goal>stop</goal>
 									<goal>start</goal>
 								</goals>
 							</execution>
@@ -486,7 +472,7 @@
 									<goal>start</goal>
 								</goals>
 								<configuration>
-									<wait>200000</wait>
+									<wait>20000</wait>
 									<maxAttempts>10</maxAttempts>
 									<arguments>
 										<argument>--server.port=${tomcat.http.port}</argument>
